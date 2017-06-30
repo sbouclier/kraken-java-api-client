@@ -7,28 +7,9 @@ import java.util.ArrayList;
  *
  * @author Stéphane Bouclier
  */
-public class ServerTimeResult {
+public class ServerTimeResult extends Result<ServerTimeResult.ServerTime>{
 
-    private ArrayList<Object> error = new ArrayList<>();
-    private Result result;
-
-    public ArrayList<Object> getError() {
-        return error;
-    }
-
-    public Result getResult() {
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ServerTimeResult{" +
-                "error=" + error +
-                ", result=" + result +
-                '}';
-    }
-
-    public static class Result {
+    public static class ServerTime {
 
         public Long unixtime;
         public String rfc1123;
@@ -43,7 +24,7 @@ public class ServerTimeResult {
 
         @Override
         public String toString() {
-            return "Result{" +
+            return "ServerTime{" +
                     "unixtime=" + unixtime +
                     ", rfc1123='" + rfc1123 + '\'' +
                     '}';

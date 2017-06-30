@@ -67,8 +67,8 @@ public class KrakenAPIClient {
     public static void main(String[] args) throws IOException {
         KrakenAPIClient client = new KrakenAPIClient();
         //ServerTimeResult result = client.getServerTime();
-        AssetInformationResult result = client.getAssetInformation();
+        //AssetInformationResult result = client.getAssetInformation();
 
-        System.out.println(result.getResult());
+        //System.out.println(result.getResult());
     }
 }
