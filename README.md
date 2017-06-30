@@ -13,4 +13,11 @@ KrakenAPIClient client = new KrakenAPIClient();
 ServerTimeResult result = client.getServerTime();
 ```
 
+## Get asset information
+
+```java
+KrakenAPIClient client = new KrakenAPIClient();
+AssetInfoResult result = client.getAssetInformation();
+```
+
 Others methods coming soon...

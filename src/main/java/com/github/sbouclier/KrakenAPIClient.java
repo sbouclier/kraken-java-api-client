@@ -1,6 +1,7 @@
 package com.github.sbouclier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.sbouclier.result.AssetInformationResult;
 import com.github.sbouclier.result.ServerTimeResult;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -41,14 +42,33 @@ public class KrakenAPIClient {
         return res;
     }
 
+    /**
+     * Get asset information
+     *
+     * @return asset information
+     * @throws IOException
+     */
+    public AssetInformationResult getAssetInformation() throws IOException {
+        HttpGet httpGet = new HttpGet("https://api.kraken.com/0/public/Assets");
+
+        CloseableHttpResponse response = client.execute(httpGet);
+        String responseString = new BasicResponseHandler().handleResponse(response);
+        AssetInformationResult res = new ObjectMapper().readValue(responseString, AssetInformationResult.class);
+
+        client.close();
+
+        return res;
+    }
+
     public void setClient(CloseableHttpClient client) {
         this.client = client;
     }
 
     public static void main(String[] args) throws IOException {
         KrakenAPIClient client = new KrakenAPIClient();
-        ServerTimeResult result = client.getServerTime();
+        //ServerTimeResult result = client.getServerTime();
+        AssetInformationResult result = client.getAssetInformation();
 
-        System.out.println(result);
+        System.out.println(result.getResult());
     }
 }
