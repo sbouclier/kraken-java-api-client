@@ -1,6 +1,8 @@
 package com.github.sbouclier.result;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Map;
 
@@ -58,13 +60,12 @@ public class AssetInformationResult extends Result<Map<String, AssetInformationR
 
         @Override
         public String toString() {
-            return "AssetInformation{" +
-                    "alternateName='" + alternateName + '\'' +
-                    ", assetClass='" + assetClass + '\'' +
-                    ", decimals=" + decimals +
-                    ", displayDecimals=" + displayDecimals +
-                    '}';
+            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                    .append("alternateName", alternateName)
+                    .append("assetClass", assetClass)
+                    .append("decimals", decimals)
+                    .append("displayDecimals", displayDecimals)
+                    .toString();
         }
-
     }
 }

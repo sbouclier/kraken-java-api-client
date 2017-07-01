@@ -1,5 +1,8 @@
 package com.github.sbouclier.result;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.util.ArrayList;
 
 /**
@@ -29,5 +32,13 @@ public class Result<T> {
      */
     public T getResult() {
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("error", error)
+                .append("result", result)
+                .toString();
     }
 }
