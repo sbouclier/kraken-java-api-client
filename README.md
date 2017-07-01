@@ -20,4 +20,11 @@ KrakenAPIClient client = new KrakenAPIClient();
 AssetInfoResult result = client.getAssetInformation();
 ```
 
+## Get tradable asset pairs
+
+```java
+KrakenAPIClient client = new KrakenAPIClient();
+AssetPairsResult result = client.getAssetPairs();
+```
+
 Others methods coming soon...

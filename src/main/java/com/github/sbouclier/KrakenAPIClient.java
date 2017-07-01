@@ -2,6 +2,7 @@ package com.github.sbouclier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sbouclier.result.AssetInformationResult;
+import com.github.sbouclier.result.AssetPairsResult;
 import com.github.sbouclier.result.ServerTimeResult;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -60,6 +61,24 @@ public class KrakenAPIClient {
         return res;
     }
 
+    /**
+     * Get tradable asset pairs
+     *
+     * @return asset pairs
+     * @throws IOException
+     */
+    public AssetPairsResult getAssetPairs() throws IOException {
+        HttpGet httpGet = new HttpGet("https://api.kraken.com/0/public/AssetPairs");
+
+        CloseableHttpResponse response = client.execute(httpGet);
+        String responseString = new BasicResponseHandler().handleResponse(response);
+        AssetPairsResult res = new ObjectMapper().readValue(responseString, AssetPairsResult.class);
+
+        client.close();
+
+        return res;
+    }
+
     public void setClient(CloseableHttpClient client) {
         this.client = client;
     }
@@ -68,7 +87,8 @@ public class KrakenAPIClient {
         KrakenAPIClient client = new KrakenAPIClient();
         //ServerTimeResult result = client.getServerTime();
         //AssetInformationResult result = client.getAssetInformation();
+        AssetPairsResult result = client.getAssetPairs();
 
-        //System.out.println(result.getResult());
+        System.out.println(result.getResult());
     }
 }
