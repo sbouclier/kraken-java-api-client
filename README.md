@@ -36,4 +36,12 @@ System.out.println(result.getResult());
 // print a map of AssetPair
 ```
 
+## Get ticker information
+
+```java
+TickerInformationResult result = client.getTickerInformation(Arrays.asList("BTCEUR","ETHEUR"));
+System.out.println(result.getResult());
+// print a map of TickerInformation
+```
+
 Others methods coming soon...
