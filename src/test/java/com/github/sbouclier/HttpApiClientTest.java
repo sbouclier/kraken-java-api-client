@@ -18,14 +18,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,21 +42,20 @@ public class HttpApiClientTest {
     private HttpEntity mockEntity;
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         mockHttpClient = mock(CloseableHttpClient.class);
         mockHttpResponse = mock(CloseableHttpResponse.class);
         mockEntity = mock(HttpEntity.class);
 
-        client = new HttpApiClient();
+        when(mockHttpClient.execute(any())).thenReturn(mockHttpResponse);
+        when(mockHttpResponse.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK"));
+        when(mockHttpResponse.getEntity()).thenReturn(mockEntity);
     }
 
     @Test
     public void should_unmarshal_server_time_result() throws IOException {
         String mockResponseBody = "{\"error\":[],\"result\":{\"unixtime\":1498768391,\"rfc1123\":\"Thu, 29 Jun 17 20:33:11 +0000\"}}";
 
-        when(mockHttpClient.execute(any())).thenReturn(mockHttpResponse);
-        when(mockHttpResponse.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK"));
-        when(mockHttpResponse.getEntity()).thenReturn(mockEntity);
         when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(mockResponseBody.getBytes("UTF-8")));
 
         HttpApiClient<ServerTimeResult> client = new HttpApiClient<>(mockHttpClient);
@@ -102,9 +98,6 @@ public class HttpApiClientTest {
         zusd.setDecimals((byte) 4);
         zusd.setDisplayDecimals((byte) 2);
 
-        when(mockHttpClient.execute(any())).thenReturn(mockHttpResponse);
-        when(mockHttpResponse.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK"));
-        when(mockHttpResponse.getEntity()).thenReturn(mockEntity);
         when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(mockResponseBody.toString().getBytes("UTF-8")));
 
         HttpApiClient<AssetInformationResult> client = new HttpApiClient<>(mockHttpClient);
@@ -127,9 +120,6 @@ public class HttpApiClientTest {
         mockResponseBody.append("\"XZECZUSD\":{\"altname\":\"ZECUSD\",\"aclass_base\":\"currency\",\"base\":\"XZEC\",\"aclass_quote\":\"currency\",\"quote\":\"ZUSD\",\"lot\":\"unit\",\"pair_decimals\":5,\"lot_decimals\":8,\"lot_multiplier\":1,\"leverage_buy\":[],\"leverage_sell\":[],\"fees\":[[0,0.26],[50000,0.24],[100000,0.22],[250000,0.2],[500000,0.18],[1000000,0.16],[2500000,0.14],[5000000,0.12],[10000000,0.1]],\"fees_maker\":[[0,0.16],[50000,0.14],[100000,0.12],[250000,0.1],[500000,0.08],[1000000,0.06],[2500000,0.04],[5000000,0.02],[10000000,0]],\"fee_volume_currency\":\"ZUSD\",\"margin_call\":80,\"margin_stop\":40}");
         mockResponseBody.append("}}");
 
-        when(mockHttpClient.execute(any())).thenReturn(mockHttpResponse);
-        when(mockHttpResponse.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK"));
-        when(mockHttpResponse.getEntity()).thenReturn(mockEntity);
         when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(mockResponseBody.toString().getBytes("UTF-8")));
 
         HttpApiClient<AssetPairsResult> client = new HttpApiClient<>(mockHttpClient);
@@ -185,9 +175,6 @@ public class HttpApiClientTest {
         StringBuilder mockResponseBody = new StringBuilder("{\"error\":[],\"result\":{\"XETHZEUR\":{\"a\":[\"216.18760\",\"115\",\"115.000\"],\"b\":[\"216.16000\",\"5\",\"5.000\"],\"c\":[\"216.18760\",\"0.24345176\"],\"v\":[\"103999.93327458\",\"111357.48815071\"],\"p\":[\"220.71241\",\"221.42637\"],\"t\":[19348,20886],\"l\":[\"212.22200\",\"212.22200\"],\"h\":[\"234.41106\",\"235.15249\"],\"o\":\"233.55001\"},\"XXBTZEUR\":{\"a\":[\"2211.70800\",\"1\",\"1.000\"],\"b\":[\"2211.70800\",\"4\",\"4.000\"],\"c\":[\"2211.70800\",\"0.01470000\"],\"v\":[\"7392.61128020\",\"7957.37448389\"],\"p\":[\"2228.26798\",\"2232.12911\"],\"t\":[19554,21256],\"l\":[\"2188.65000\",\"2188.65000\"],\"h\":[\"2288.25800\",\"2290.77900\"],\"o\":\"2284.69200\"}");
         mockResponseBody.append("}}");
 
-        when(mockHttpClient.execute(any())).thenReturn(mockHttpResponse);
-        when(mockHttpResponse.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK"));
-        when(mockHttpResponse.getEntity()).thenReturn(mockEntity);
         when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(mockResponseBody.toString().getBytes("UTF-8")));
 
         Map<String, String> params = new HashMap<>();
