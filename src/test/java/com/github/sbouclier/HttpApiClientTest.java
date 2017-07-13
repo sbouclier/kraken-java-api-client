@@ -1,9 +1,6 @@
 package com.github.sbouclier;
 
-import com.github.sbouclier.result.AssetInformationResult;
-import com.github.sbouclier.result.AssetPairsResult;
-import com.github.sbouclier.result.ServerTimeResult;
-import com.github.sbouclier.result.TickerInformationResult;
+import com.github.sbouclier.result.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
@@ -186,5 +183,22 @@ public class HttpApiClientTest {
         assertEquals(result.getResult().size(), 2);
         assertThat(BigDecimal.valueOf(216.18760),  Matchers.comparesEqualTo(result.getResult().get("XETHZEUR").ask.price));
         assertThat(BigDecimal.valueOf(2211.70800),  Matchers.comparesEqualTo(result.getResult().get("XXBTZEUR").ask.price));
+    }
+
+    @Test
+    public void should_unmarshal_ohlc_result() throws IOException, URISyntaxException {
+        StringBuilder mockResponseBody = new StringBuilder("{\"error\":[],\"result\":{\"XXBTZEUR\":[[1499846640,\"2033.549\",\"2033.550\",\"2028.929\",\"2033.540\",\"2031.097\",\"5.19237838\",32],[1499846700,\"2033.333\",\"2033.570\",\"2033.320\",\"2033.570\",\"2033.328\",\"3.75994884\",7]],\"last\":1499889780");
+        mockResponseBody.append("}}");
+
+        when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(mockResponseBody.toString().getBytes("UTF-8")));
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
+
+        HttpApiClient<OHLCResult> client = new HttpApiClient<>(mockHttpClient);
+        OHLCResult result = client.callHttpClient("https://api.kraken.com/0/public/OHLC", OHLCResult.class, params);
+
+        assertEquals(result.getOHLCData().size(), 2);
+        assertEquals(result.getLast().intValue(), 1499889780);
     }
 }
