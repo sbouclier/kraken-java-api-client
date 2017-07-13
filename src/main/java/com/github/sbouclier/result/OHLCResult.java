@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.sbouclier.KrakenApiException;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -44,13 +45,18 @@ public class OHLCResult extends Result<Map<String, Object>> {
         }
     }
 
-    public List<OHLC> getOHLCData() throws IOException {
+    public List<OHLC> getOHLCData() throws KrakenApiException {
         Iterator it = getResult().entrySet().iterator();
         ArrayList ohlcData = (ArrayList) ((Map.Entry) it.next()).getValue();
-        return new ObjectMapper().readValue(ohlcData.toString(), new TypeReference<List<OHLC>>() {});
+
+        try {
+            return new ObjectMapper().readValue(ohlcData.toString(), new TypeReference<List<OHLC>>() {});
+        } catch (IOException ex) {
+            throw new KrakenApiException("unable to deserialize data", ex);
+        }
     }
 
-    public Integer getLast() throws IOException {
+    public Integer getLast() {
         Iterator it = getResult().entrySet().iterator();
         it.next();
         return (Integer) ((Map.Entry) it.next()).getValue();

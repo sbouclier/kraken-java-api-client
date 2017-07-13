@@ -50,7 +50,7 @@ public class HttpApiClientTest {
     }
 
     @Test
-    public void should_unmarshal_server_time_result() throws IOException {
+    public void should_unmarshal_server_time_result() throws IOException, KrakenApiException {
         String mockResponseBody = "{\"error\":[],\"result\":{\"unixtime\":1498768391,\"rfc1123\":\"Thu, 29 Jun 17 20:33:11 +0000\"}}";
 
         when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(mockResponseBody.getBytes("UTF-8")));
@@ -63,7 +63,7 @@ public class HttpApiClientTest {
     }
 
     @Test
-    public void should_unmarshal_asset_information_result() throws IOException {
+    public void should_unmarshal_asset_information_result() throws IOException, KrakenApiException {
         StringBuilder mockResponseBody = new StringBuilder("{\"error\":[],\"result\":{");
         mockResponseBody.append("\"XETC\":{\"aclass\":\"currency\",\"altname\":\"ETC\",\"decimals\":10,\"display_decimals\":5},");
         mockResponseBody.append("\"XETH\":{\"aclass\":\"currency\",\"altname\":\"ETH\",\"decimals\":10,\"display_decimals\":5},");
@@ -108,7 +108,7 @@ public class HttpApiClientTest {
     }
 
     @Test
-    public void should_unmarshal_asset_pairs_result() throws IOException {
+    public void should_unmarshal_asset_pairs_result() throws IOException, KrakenApiException {
         StringBuilder mockResponseBody = new StringBuilder("{\"error\":[],\"result\":{");
         mockResponseBody.append("\"XETCXXBT\":{\"altname\":\"ETCXBT\",\"aclass_base\":\"currency\",\"base\":\"XETC\",\"aclass_quote\":\"currency\",\"quote\":\"XXBT\",\"lot\":\"unit\",\"pair_decimals\":8,\"lot_decimals\":8,\"lot_multiplier\":1,\"leverage_buy\":[2,3],\"leverage_sell\":[2,3],\"fees\":[[0,0.26],[50000,0.24],[100000,0.22],[250000,0.2],[500000,0.18],[1000000,0.16],[2500000,0.14],[5000000,0.12],[10000000,0.1]],\"fees_maker\":[[0,0.16],[50000,0.14],[100000,0.12],[250000,0.1],[500000,0.08],[1000000,0.06],[2500000,0.04],[5000000,0.02],[10000000,0]],\"fee_volume_currency\":\"ZUSD\",\"margin_call\":80,\"margin_stop\":40},");
         mockResponseBody.append("\"XETCZEUR\":{\"altname\":\"ETCEUR\",\"aclass_base\":\"currency\",\"base\":\"XETC\",\"aclass_quote\":\"currency\",\"quote\":\"ZEUR\",\"lot\":\"unit\",\"pair_decimals\":5,\"lot_decimals\":8,\"lot_multiplier\":1,\"leverage_buy\":[2],\"leverage_sell\":[2],\"fees\":[[0,0.26],[50000,0.24],[100000,0.22],[250000,0.2],[500000,0.18],[1000000,0.16],[2500000,0.14],[5000000,0.12],[10000000,0.1]],\"fees_maker\":[[0,0.16],[50000,0.14],[100000,0.12],[250000,0.1],[500000,0.08],[1000000,0.06],[2500000,0.04],[5000000,0.02],[10000000,0]],\"fee_volume_currency\":\"ZUSD\",\"margin_call\":80,\"margin_stop\":40},");
@@ -168,7 +168,7 @@ public class HttpApiClientTest {
     }
 
     @Test
-    public void should_unmarshal_ticker_information_result() throws IOException, URISyntaxException {
+    public void should_unmarshal_ticker_information_result() throws IOException, URISyntaxException, KrakenApiException {
         StringBuilder mockResponseBody = new StringBuilder("{\"error\":[],\"result\":{\"XETHZEUR\":{\"a\":[\"216.18760\",\"115\",\"115.000\"],\"b\":[\"216.16000\",\"5\",\"5.000\"],\"c\":[\"216.18760\",\"0.24345176\"],\"v\":[\"103999.93327458\",\"111357.48815071\"],\"p\":[\"220.71241\",\"221.42637\"],\"t\":[19348,20886],\"l\":[\"212.22200\",\"212.22200\"],\"h\":[\"234.41106\",\"235.15249\"],\"o\":\"233.55001\"},\"XXBTZEUR\":{\"a\":[\"2211.70800\",\"1\",\"1.000\"],\"b\":[\"2211.70800\",\"4\",\"4.000\"],\"c\":[\"2211.70800\",\"0.01470000\"],\"v\":[\"7392.61128020\",\"7957.37448389\"],\"p\":[\"2228.26798\",\"2232.12911\"],\"t\":[19554,21256],\"l\":[\"2188.65000\",\"2188.65000\"],\"h\":[\"2288.25800\",\"2290.77900\"],\"o\":\"2284.69200\"}");
         mockResponseBody.append("}}");
 
@@ -186,7 +186,7 @@ public class HttpApiClientTest {
     }
 
     @Test
-    public void should_unmarshal_ohlc_result() throws IOException, URISyntaxException {
+    public void should_unmarshal_ohlc_result() throws IOException, URISyntaxException, KrakenApiException {
         StringBuilder mockResponseBody = new StringBuilder("{\"error\":[],\"result\":{\"XXBTZEUR\":[[1499846640,\"2033.549\",\"2033.550\",\"2028.929\",\"2033.540\",\"2031.097\",\"5.19237838\",32],[1499846700,\"2033.333\",\"2033.570\",\"2033.320\",\"2033.570\",\"2033.328\",\"3.75994884\",7]],\"last\":1499889780");
         mockResponseBody.append("}}");
 

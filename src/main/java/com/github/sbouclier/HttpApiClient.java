@@ -56,15 +56,10 @@ public class HttpApiClient<T extends Result> {
      * @return call result
      * @throws IOException
      */
-    public T callHttpClient(String url, Class<T> result) throws IOException {
+    public T callHttpClient(String url, Class<T> result) throws KrakenApiException {
         HttpGet httpGet = new HttpGet(url);
 
-        CloseableHttpResponse response = httpClient.execute(httpGet);
-        String responseString = new BasicResponseHandler().handleResponse(response);
-        System.out.println(responseString);
-        T res = new ObjectMapper().readValue(responseString, result);
-
-        httpClient.close();
+        T res = executeQuery(httpGet, result);
 
         return res;
     }
@@ -78,21 +73,41 @@ public class HttpApiClient<T extends Result> {
      * @return call result
      * @throws IOException
      */
-    public T callHttpClient(String url, Class<T> result, Map<String, String> params) throws IOException, URISyntaxException {
+    public T callHttpClient(String url, Class<T> result, Map<String, String> params) throws KrakenApiException {
         HttpGet httpGet = new HttpGet(url);
         URIBuilder builder = new URIBuilder(httpGet.getURI());
         params.forEach((k,v) -> builder.addParameter(k, v));
 
-        URI uri = builder.build();
+        URI uri = null;
+        try {
+            uri = builder.build();
+        } catch (URISyntaxException ex) {
+            throw new KrakenApiException("unable to query Kraken API", ex);
+        }
         httpGet.setURI(uri);
 
-        CloseableHttpResponse response = httpClient.execute(httpGet);
-        String responseString = new BasicResponseHandler().handleResponse(response);
-        System.out.println(responseString);
-        T res = new ObjectMapper().readValue(responseString, result);
-
-        httpClient.close();
+        T res = executeQuery(httpGet, result);
 
         return res;
+    }
+
+    private T executeQuery(HttpGet httpGet, Class<T> result) throws KrakenApiException {
+        try {
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            String responseString = new BasicResponseHandler().handleResponse(response);
+            System.out.println("status " + response.getStatusLine().getStatusCode());
+            System.out.println(responseString);
+            T res = new ObjectMapper().readValue(responseString, result);
+
+            if(!res.getError().isEmpty()) {
+                throw new KrakenApiException(res.getError());
+            }
+
+            httpClient.close();
+
+            return res;
+        } catch(IOException ex) {
+            throw new KrakenApiException("unable to query Kraken API", ex);
+        }
     }
 }

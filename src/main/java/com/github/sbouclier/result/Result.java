@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Result<T> {
 
-    private ArrayList<Object> error = new ArrayList<>();
+    private ArrayList<String> error = new ArrayList<>();
     private T result;
 
     /**
@@ -21,7 +21,7 @@ public class Result<T> {
      *
      * @return errors
      */
-    public ArrayList<Object> getError() {
+    public ArrayList<String> getError() {
         return error;
     }
 

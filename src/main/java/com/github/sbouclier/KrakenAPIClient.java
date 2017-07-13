@@ -2,8 +2,6 @@ package com.github.sbouclier;
 
 import com.github.sbouclier.result.*;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,9 +44,9 @@ public class KrakenAPIClient {
      * Get server time
      *
      * @return server time
-     * @throws IOException
+     * @throws KrakenApiException
      */
-    public ServerTimeResult getServerTime() throws IOException {
+    public ServerTimeResult getServerTime() throws KrakenApiException {
         return new HttpApiClient<ServerTimeResult>()
                 .callHttpClient("https://api.kraken.com/0/public/Time", ServerTimeResult.class);
     }
@@ -57,9 +55,9 @@ public class KrakenAPIClient {
      * Get asset information
      *
      * @return asset information
-     * @throws IOException
+     * @throws KrakenApiException
      */
-    public AssetInformationResult getAssetInformation() throws IOException {
+    public AssetInformationResult getAssetInformation() throws KrakenApiException {
         return new HttpApiClient<AssetInformationResult>()
                 .callHttpClient("https://api.kraken.com/0/public/Assets", AssetInformationResult.class);
     }
@@ -68,9 +66,9 @@ public class KrakenAPIClient {
      * Get tradable asset pairs
      *
      * @return asset pairs
-     * @throws IOException
+     * @throws KrakenApiException
      */
-    public AssetPairsResult getAssetPairs() throws IOException {
+    public AssetPairsResult getAssetPairs() throws KrakenApiException {
         return new HttpApiClient<AssetPairsResult>()
                 .callHttpClient("https://api.kraken.com/0/public/AssetPairs", AssetPairsResult.class);
     }
@@ -80,9 +78,9 @@ public class KrakenAPIClient {
      *
      * @param pairs list of pair
      * @return ticker information
-     * @throws IOException
+     * @throws KrakenApiException
      */
-    public TickerInformationResult getTickerInformation(List<String> pairs) throws IOException, URISyntaxException {
+    public TickerInformationResult getTickerInformation(List<String> pairs) throws KrakenApiException {
         Map<String, String> params = new HashMap<>();
         params.put("pair", String.join(",", pairs));
 
@@ -98,10 +96,9 @@ public class KrakenAPIClient {
      * @param interval interval of time
      * @param since data since givene id
      * @return data (OHLC + last id)
-     * @throws IOException
-     * @throws URISyntaxException
+     * @throws KrakenApiException
      */
-    public OHLCResult getOHLC(String pair, Interval interval, Optional<Integer> since) throws IOException, URISyntaxException {
+    public OHLCResult getOHLC(String pair, Interval interval, Optional<Integer> since) throws KrakenApiException {
         Map<String, String> params = new HashMap<>();
         params.put("pair", pair);
         params.put("interval", String.valueOf(interval.minutes));
@@ -113,17 +110,24 @@ public class KrakenAPIClient {
                 .callHttpClient("https://api.kraken.com/0/public/OHLC", OHLCResult.class, params);
     }
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) {
         KrakenAPIClient client = new KrakenAPIClient();
         //ServerTimeResult result = client.getServerTime();
         //AssetInformationResult result = client.getAssetInformation();
         //AssetPairsResult result = client.getAssetPairs();
         //TickerInformationResult result = client.getTickerInformation(Arrays.asList("BTCEUR", "ETHEUR"));
-        OHLCResult result = client.getOHLC("BTCEUR", Interval.ONE_MINUTE, Optional.empty());
+        OHLCResult result = null;
+        try {
+            result = client.getOHLC("BTCEXXUR", Interval.ONE_MINUTE, Optional.empty());
 
-        // System.out.println(result.getResult().get("XXBTZEUR"));
-        System.out.println(result.getOHLCData());
-        System.out.println(result.getLast());
-        //System.out.println(result.getResult().get("XETHZEUR").ask + " > " + result.getResult().get("XETHZEUR").ask.getClass());
+            // System.out.println(result.getResult().get("XXBTZEUR"));
+            System.out.println(result.getOHLCData());
+            System.out.println(result.getLast());
+            //System.out.println(result.getResult().get("XETHZEUR").ask + " > " + result.getResult().get("XETHZEUR").ask.getClass());
+        } catch (KrakenApiException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+
     }
 }
