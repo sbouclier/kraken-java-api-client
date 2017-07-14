@@ -14,6 +14,8 @@ import java.util.Optional;
  */
 public class KrakenAPIClient {
 
+    public static String BASE_URL = "https://api.kraken.com/0";
+
     public enum Interval {
 
         ONE_MINUTE(1),
@@ -48,7 +50,7 @@ public class KrakenAPIClient {
      */
     public ServerTimeResult getServerTime() throws KrakenApiException {
         return new HttpApiClient<ServerTimeResult>()
-                .callHttpClient("https://api.kraken.com/0/public/Time", ServerTimeResult.class);
+                .callHttpClient(BASE_URL + "/public/Time", ServerTimeResult.class);
     }
 
     /**
@@ -59,7 +61,7 @@ public class KrakenAPIClient {
      */
     public AssetInformationResult getAssetInformation() throws KrakenApiException {
         return new HttpApiClient<AssetInformationResult>()
-                .callHttpClient("https://api.kraken.com/0/public/Assets", AssetInformationResult.class);
+                .callHttpClient(BASE_URL + "/public/Assets", AssetInformationResult.class);
     }
 
     /**
@@ -70,7 +72,7 @@ public class KrakenAPIClient {
      */
     public AssetPairsResult getAssetPairs() throws KrakenApiException {
         return new HttpApiClient<AssetPairsResult>()
-                .callHttpClient("https://api.kraken.com/0/public/AssetPairs", AssetPairsResult.class);
+                .callHttpClient(BASE_URL + "/public/AssetPairs", AssetPairsResult.class);
     }
 
     /**
@@ -85,7 +87,7 @@ public class KrakenAPIClient {
         params.put("pair", String.join(",", pairs));
 
         return new HttpApiClient<TickerInformationResult>()
-                .callHttpClient("https://api.kraken.com/0/public/Ticker", TickerInformationResult.class, params);
+                .callHttpClient(BASE_URL + "/public/Ticker", TickerInformationResult.class, params);
     }
 
 
@@ -94,7 +96,7 @@ public class KrakenAPIClient {
      *
      * @param pair     currency pair
      * @param interval interval of time
-     * @param since data since givene id
+     * @param since    data since givene id
      * @return data (OHLC + last id)
      * @throws KrakenApiException
      */
@@ -105,7 +107,7 @@ public class KrakenAPIClient {
         params.put("since", String.valueOf(since));
 
         return new HttpApiClient<OHLCResult>()
-                .callHttpClient("https://api.kraken.com/0/public/OHLC", OHLCResult.class, params);
+                .callHttpClient(BASE_URL + "/public/OHLC", OHLCResult.class, params);
     }
 
     /**
@@ -122,7 +124,7 @@ public class KrakenAPIClient {
         params.put("interval", String.valueOf(interval.minutes));
 
         return new HttpApiClient<OHLCResult>()
-                .callHttpClient("https://api.kraken.com/0/public/OHLC", OHLCResult.class, params);
+                .callHttpClient(BASE_URL + "/public/OHLC", OHLCResult.class, params);
     }
 
     public static void main(String[] args) {
