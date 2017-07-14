@@ -98,13 +98,28 @@ public class KrakenAPIClient {
      * @return data (OHLC + last id)
      * @throws KrakenApiException
      */
-    public OHLCResult getOHLC(String pair, Interval interval, Optional<Integer> since) throws KrakenApiException {
+    public OHLCResult getOHLC(String pair, Interval interval, Integer since) throws KrakenApiException {
         Map<String, String> params = new HashMap<>();
         params.put("pair", pair);
         params.put("interval", String.valueOf(interval.minutes));
-        if(since.isPresent()) {
-            params.put("since", String.valueOf(since.get()));
-        }
+        params.put("since", String.valueOf(since));
+
+        return new HttpApiClient<OHLCResult>()
+                .callHttpClient("https://api.kraken.com/0/public/OHLC", OHLCResult.class, params);
+    }
+
+    /**
+     * Get OHLC data
+     *
+     * @param pair     currency pair
+     * @param interval interval of time
+     * @return data (OHLC + last id)
+     * @throws KrakenApiException
+     */
+    public OHLCResult getOHLC(String pair, Interval interval) throws KrakenApiException {
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", pair);
+        params.put("interval", String.valueOf(interval.minutes));
 
         return new HttpApiClient<OHLCResult>()
                 .callHttpClient("https://api.kraken.com/0/public/OHLC", OHLCResult.class, params);
