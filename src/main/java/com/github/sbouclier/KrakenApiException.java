@@ -12,6 +12,10 @@ public class KrakenApiException extends Exception {
 
     List<String> errors = new ArrayList<>();
 
+    public KrakenApiException(String error) {
+        this.addError(error);
+    }
+
     public KrakenApiException(List<String> errors) {
         this.errors = errors;
     }
