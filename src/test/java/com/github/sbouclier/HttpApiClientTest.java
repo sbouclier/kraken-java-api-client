@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -200,5 +202,33 @@ public class HttpApiClientTest {
 
         assertEquals(result.getOHLCData().size(), 2);
         assertEquals(result.getLast().intValue(), 1499889780);
+    }
+
+    @Test
+    public void should_unmarshal_order_book_result() throws KrakenApiException, IOException {
+        StringBuilder mockResponseBody = new StringBuilder("{\"error\":[],\"result\":{\"XXBTZEUR\":{\"asks\":[[\"1903.00000\",\"0.027\",1500070864],[\"1904.99800\",\"1.638\",1500070897],[\"1904.99900\",\"0.202\",1500070890]],\"bids\":[]}");
+        mockResponseBody.append("}}");
+
+        when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(mockResponseBody.toString().getBytes("UTF-8")));
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
+        params.put("count", "3");
+
+        HttpApiClient<OrderBookResult> client = new HttpApiClient<>(mockHttpClient);
+        OrderBookResult result = client.callHttpClient("https://api.kraken.com/0/public/Depth", OrderBookResult.class, params);
+
+        assertEquals(result.getResult().get("XXBTZEUR").asks.size(), 3);
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(0).price,  Matchers.comparesEqualTo(BigDecimal.valueOf(1903)));
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(0).volume,  Matchers.comparesEqualTo(BigDecimal.valueOf(0.027)));
+        assertEquals(result.getResult().get("XXBTZEUR").asks.get(0).timestamp.intValue(), 1500070864);
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(1).price,  Matchers.comparesEqualTo(BigDecimal.valueOf(1904.998)));
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(1).volume,  Matchers.comparesEqualTo(BigDecimal.valueOf(1.638)));
+        assertEquals(result.getResult().get("XXBTZEUR").asks.get(1).timestamp.intValue(), 1500070897);
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(2).price,  Matchers.comparesEqualTo(BigDecimal.valueOf(1904.999)));
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(2).volume,  Matchers.comparesEqualTo(BigDecimal.valueOf(0.202)));
+        assertEquals(result.getResult().get("XXBTZEUR").asks.get(2).timestamp.intValue(), 1500070890);
+        assertTrue(result.getResult().get("XXBTZEUR").bids.isEmpty());
+
     }
 }

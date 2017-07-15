@@ -127,19 +127,50 @@ public class KrakenAPIClient {
                 .callHttpClient(BASE_URL + "/public/OHLC", OHLCResult.class, params);
     }
 
+    /**
+     * Get order book
+     *
+     * @param pair  asset pair
+     * @param count maximum number of asks/bids
+     * @return order book
+     * @throws KrakenApiException
+     */
+    public OrderBookResult getOrderBook(String pair, Integer count) throws KrakenApiException {
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", pair);
+        params.put("count", String.valueOf(count));
+
+        return new HttpApiClient<OrderBookResult>()
+                .callHttpClient(BASE_URL + "/public/Depth", OrderBookResult.class, params);
+    }
+
+    /**
+     * Get order book
+     *
+     * @param pair asset pair
+     * @return order book
+     * @throws KrakenApiException
+     */
+    public OrderBookResult getOrderBook(String pair) throws KrakenApiException {
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", pair);
+
+        return new HttpApiClient<OrderBookResult>()
+                .callHttpClient(BASE_URL + "/public/Depth", OrderBookResult.class, params);
+    }
+
     public static void main(String[] args) {
         KrakenAPIClient client = new KrakenAPIClient();
         //ServerTimeResult result = client.getServerTime();
         //AssetInformationResult result = client.getAssetInformation();
         //AssetPairsResult result = client.getAssetPairs();
         //TickerInformationResult result = client.getTickerInformation(Arrays.asList("BTCEUR", "ETHEUR"));
-        OHLCResult result = null;
+        OrderBookResult result = null;
         try {
-            result = client.getOHLC("BTCEXXUR", Interval.ONE_MINUTE, Optional.empty());
+            result = client.getOrderBook("XXBTZEUR", 3);
 
             // System.out.println(result.getResult().get("XXBTZEUR"));
-            System.out.println(result.getOHLCData());
-            System.out.println(result.getLast());
+            System.out.println(result.getResult());
             //System.out.println(result.getResult().get("XETHZEUR").ask + " > " + result.getResult().get("XETHZEUR").ask.getClass());
         } catch (KrakenApiException e) {
             e.printStackTrace();

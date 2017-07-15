@@ -47,9 +47,16 @@ System.out.println(result.getResult());
 ## Get OHLC
 
 ```java
-OHLCResult result = client.getOHLC("BTCEUR", Interval.ONE_MINUTE, Optional.empty());
+OHLCResult result = client.getOHLC("BTCEUR", Interval.ONE_MINUTE);
 System.out.println(result.getOHLCData()); // OHLC data
 System.out.println(result.getLast()); // last id
+```
+
+## Get order book
+
+```java
+OrderBookResult result = client.getOrderBook("BTCEUR");
+System.out.println(result);
 ```
 
 Others methods coming soon...
