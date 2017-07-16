@@ -191,6 +191,38 @@ public class KrakenAPIClient {
                 .callHttpClientWithLastId(BASE_URL + "/public/Trades", RecentTradeResult.class, params);
     }
 
+    /**
+     * Get recent spreads
+     *
+     * @param pair asset pair
+     * @return recent spreads
+     * @throws KrakenApiException
+     */
+    public RecentSpreadResult getRecentSpreads(String pair) throws KrakenApiException {
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", pair);
+
+        return new HttpApiClient<RecentSpreadResult>()
+                .callHttpClientWithLastId(BASE_URL + "/public/Spread", RecentSpreadResult.class, params);
+    }
+
+    /**
+     * Get recent spreads
+     *
+     * @param pair  asset pair
+     * @param since return spreads since given id
+     * @return recent spreads
+     * @throws KrakenApiException
+     */
+    public RecentSpreadResult getRecentSpreads(String pair, Integer since) throws KrakenApiException {
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", pair);
+        params.put("since", String.valueOf(since));
+
+        return new HttpApiClient<RecentSpreadResult>()
+                .callHttpClientWithLastId(BASE_URL + "/public/Spread", RecentSpreadResult.class, params);
+    }
+
     public static void main(String[] args) throws KrakenApiException, IOException {
         KrakenAPIClient client = new KrakenAPIClient();
         //ServerTimeResult result = client.getServerTime();
@@ -203,9 +235,9 @@ public class KrakenAPIClient {
         //System.out.println("resultOHLC:"+resultOHLC.getResult());
 
 
-        RecentTradeResult result = null;
+        RecentSpreadResult result = null;
         try {
-            result = client.getRecentTrades("XXBTZEUR");
+            result = client.getRecentSpreads("XXBTZEUR", 1500202358);
 
             System.out.println("getResult():" + result.getResult());
             System.out.println("last id:" + result.getLastId());
@@ -214,18 +246,15 @@ public class KrakenAPIClient {
             System.out.println(e.getMessage());
         }
 
+
         // OK
         //String responseString = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[\"1751.70000\",\"0.12213919\",1500127273.3728,\"s\",\"l\",\"\"],[\"1751.44100\",\"0.72700000\",1500127273.4011,\"s\",\"l\",\"\"]]}}";
         //Object res = new ObjectMapper().readValue(responseString, RecentTradeResult.class);
         //System.out.println("res>"+res);
 
-        //String responseString2 = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[\"1751.70000\",\"0.12213919\",1500127273.3728,\"s\",\"l\",\"\"],[\"1751.44100\",\"0.72700000\",1500127273.4011,\"s\",\"l\",\"\"]],\"last\":1499990400}}";
+        String responseString2 = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[1500197914,\"1671.00000\",\"1671.00000\"],[1500197914,\"1670.29400\",\"1671.00000\"],[1500197921,\"1671.00000\",\"1671.00000\"]],\"last\":1499990400}}";
 
-        //Pattern pattern = Pattern.compile(",\"last\":([0-9]+)");
-        //Matcher matcher = pattern.matcher(responseString2);
-        //if(matcher.find()) {
-        //    System.out.println("group>"+matcher.group(1));
-        //}
+
 
         //String replace = responseString2.replaceAll(",\"last\":([0-9]+)", "");
         //System.out.println("replace:"+replace);

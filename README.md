@@ -67,4 +67,12 @@ System.out.println(result.getResult());
 System.out.println("last id: "+result.getLastId());
 ```
 
+## Get recent spreads
+
+```java
+RecentSpreadResult result = client.getRecentSpreads("BTCEUR");
+System.out.println(result.getResult());
+System.out.println("last id: "+result.getLastId());
+```
+
 Others methods coming soon...
