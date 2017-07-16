@@ -2,10 +2,10 @@ package com.github.sbouclier;
 
 import com.github.sbouclier.result.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Kraken API client
@@ -159,23 +159,78 @@ public class KrakenAPIClient {
                 .callHttpClient(BASE_URL + "/public/Depth", OrderBookResult.class, params);
     }
 
-    public static void main(String[] args) {
+    /**
+     * Get recent trades
+     *
+     * @param pair asset pair
+     * @return recent trades
+     * @throws KrakenApiException
+     */
+    public RecentTradeResult getRecentTrades(String pair) throws KrakenApiException {
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", pair);
+
+        return new HttpApiClient<RecentTradeResult>()
+                .callHttpClientWithLastId(BASE_URL + "/public/Trades", RecentTradeResult.class, params);
+    }
+
+    /**
+     * Get recent trades
+     *
+     * @param pair  asset pair
+     * @param since return trade data since given id
+     * @return recent trades
+     * @throws KrakenApiException
+     */
+    public RecentTradeResult getRecentTrades(String pair, Integer since) throws KrakenApiException {
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", pair);
+        params.put("since", String.valueOf(since));
+
+        return new HttpApiClient<RecentTradeResult>()
+                .callHttpClientWithLastId(BASE_URL + "/public/Trades", RecentTradeResult.class, params);
+    }
+
+    public static void main(String[] args) throws KrakenApiException, IOException {
         KrakenAPIClient client = new KrakenAPIClient();
         //ServerTimeResult result = client.getServerTime();
-        //AssetInformationResult result = client.getAssetInformation();
+        //AssetInformationResult resultAssertInfo = client.getAssetInformation();
+        //System.out.println("resultAssertInfo:"+resultAssertInfo.getResult());
+
         //AssetPairsResult result = client.getAssetPairs();
         //TickerInformationResult result = client.getTickerInformation(Arrays.asList("BTCEUR", "ETHEUR"));
-        OrderBookResult result = null;
-        try {
-            result = client.getOrderBook("XXBTZEUR", 3);
+        //OHLCResult resultOHLC = client.getOHLC("XXBTZEUR", Interval.ONE_DAY);
+        //System.out.println("resultOHLC:"+resultOHLC.getResult());
 
-            // System.out.println(result.getResult().get("XXBTZEUR"));
-            System.out.println(result.getResult());
-            //System.out.println(result.getResult().get("XETHZEUR").ask + " > " + result.getResult().get("XETHZEUR").ask.getClass());
+
+        RecentTradeResult result = null;
+        try {
+            result = client.getRecentTrades("XXBTZEUR");
+
+            System.out.println("getResult():" + result.getResult());
+            System.out.println("last id:" + result.getLastId());
         } catch (KrakenApiException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
 
+        // OK
+        //String responseString = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[\"1751.70000\",\"0.12213919\",1500127273.3728,\"s\",\"l\",\"\"],[\"1751.44100\",\"0.72700000\",1500127273.4011,\"s\",\"l\",\"\"]]}}";
+        //Object res = new ObjectMapper().readValue(responseString, RecentTradeResult.class);
+        //System.out.println("res>"+res);
+
+        //String responseString2 = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[\"1751.70000\",\"0.12213919\",1500127273.3728,\"s\",\"l\",\"\"],[\"1751.44100\",\"0.72700000\",1500127273.4011,\"s\",\"l\",\"\"]],\"last\":1499990400}}";
+
+        //Pattern pattern = Pattern.compile(",\"last\":([0-9]+)");
+        //Matcher matcher = pattern.matcher(responseString2);
+        //if(matcher.find()) {
+        //    System.out.println("group>"+matcher.group(1));
+        //}
+
+        //String replace = responseString2.replaceAll(",\"last\":([0-9]+)", "");
+        //System.out.println("replace:"+replace);
+
+        //Object res2 = new ObjectMapper().readValue(replace, RecentTradeResult.class);
+        //System.out.println("res2>"+res2);
     }
 }

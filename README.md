@@ -59,4 +59,12 @@ OrderBookResult result = client.getOrderBook("BTCEUR");
 System.out.println(result);
 ```
 
+## Get recent trades
+
+```java
+RecentTradeResult result = client.getRecentTrades("BTCEUR");
+System.out.println(result.getResult());
+System.out.println("last id: "+result.getLastId());
+```
+
 Others methods coming soon...
