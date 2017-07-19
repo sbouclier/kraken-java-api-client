@@ -14,7 +14,35 @@ import java.util.Map;
  */
 public class KrakenAPIClient {
 
-    public static String BASE_URL = "https://api.kraken.com/0";
+    public static String BASE_URL = "https://api.kraken.com";
+
+    private String apiKey;
+    private String apiSecret;
+
+    // ----------------
+    // - CONSTRUCTORS -
+    // ----------------
+
+    /**
+     * Default constructor to call public API requests
+     */
+    public KrakenAPIClient() {
+    }
+
+    /**
+     * Secure constructor to call private API requests
+     *
+     * @param apiKey
+     * @param apiSecret
+     */
+    public KrakenAPIClient(String apiKey, String apiSecret) {
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
+    }
+
+    // ---------------
+    // - INNER ENUMS -
+    // ---------------
 
     public enum Interval {
 
@@ -42,6 +70,10 @@ public class KrakenAPIClient {
         }
     }
 
+    // -----------
+    // - METHPDS -
+    // -----------
+
     /**
      * Get server time
      *
@@ -50,7 +82,7 @@ public class KrakenAPIClient {
      */
     public ServerTimeResult getServerTime() throws KrakenApiException {
         return new HttpApiClient<ServerTimeResult>()
-                .callHttpClient(BASE_URL + "/public/Time", ServerTimeResult.class);
+                .callHttpClient(BASE_URL + "/0/public/Time", ServerTimeResult.class);
     }
 
     /**
@@ -61,7 +93,7 @@ public class KrakenAPIClient {
      */
     public AssetInformationResult getAssetInformation() throws KrakenApiException {
         return new HttpApiClient<AssetInformationResult>()
-                .callHttpClient(BASE_URL + "/public/Assets", AssetInformationResult.class);
+                .callHttpClient(BASE_URL + "/0/public/Assets", AssetInformationResult.class);
     }
 
     /**
@@ -72,7 +104,7 @@ public class KrakenAPIClient {
      */
     public AssetPairsResult getAssetPairs() throws KrakenApiException {
         return new HttpApiClient<AssetPairsResult>()
-                .callHttpClient(BASE_URL + "/public/AssetPairs", AssetPairsResult.class);
+                .callHttpClient(BASE_URL + "/0/public/AssetPairs", AssetPairsResult.class);
     }
 
     /**
@@ -87,7 +119,7 @@ public class KrakenAPIClient {
         params.put("pair", String.join(",", pairs));
 
         return new HttpApiClient<TickerInformationResult>()
-                .callHttpClient(BASE_URL + "/public/Ticker", TickerInformationResult.class, params);
+                .callHttpClient(BASE_URL + "/0/public/Ticker", TickerInformationResult.class, params);
     }
 
 
@@ -107,7 +139,7 @@ public class KrakenAPIClient {
         params.put("since", String.valueOf(since));
 
         return new HttpApiClient<OHLCResult>()
-                .callHttpClient(BASE_URL + "/public/OHLC", OHLCResult.class, params);
+                .callHttpClient(BASE_URL + "/0/public/OHLC", OHLCResult.class, params);
     }
 
     /**
@@ -124,7 +156,7 @@ public class KrakenAPIClient {
         params.put("interval", String.valueOf(interval.minutes));
 
         return new HttpApiClient<OHLCResult>()
-                .callHttpClient(BASE_URL + "/public/OHLC", OHLCResult.class, params);
+                .callHttpClient(BASE_URL + "/0/public/OHLC", OHLCResult.class, params);
     }
 
     /**
@@ -141,7 +173,7 @@ public class KrakenAPIClient {
         params.put("count", String.valueOf(count));
 
         return new HttpApiClient<OrderBookResult>()
-                .callHttpClient(BASE_URL + "/public/Depth", OrderBookResult.class, params);
+                .callHttpClient(BASE_URL + "/0/public/Depth", OrderBookResult.class, params);
     }
 
     /**
@@ -156,7 +188,7 @@ public class KrakenAPIClient {
         params.put("pair", pair);
 
         return new HttpApiClient<OrderBookResult>()
-                .callHttpClient(BASE_URL + "/public/Depth", OrderBookResult.class, params);
+                .callHttpClient(BASE_URL + "/0/public/Depth", OrderBookResult.class, params);
     }
 
     /**
@@ -171,7 +203,7 @@ public class KrakenAPIClient {
         params.put("pair", pair);
 
         return new HttpApiClient<RecentTradeResult>()
-                .callHttpClientWithLastId(BASE_URL + "/public/Trades", RecentTradeResult.class, params);
+                .callHttpClientWithLastId(BASE_URL + "/0/public/Trades", RecentTradeResult.class, params);
     }
 
     /**
@@ -188,7 +220,7 @@ public class KrakenAPIClient {
         params.put("since", String.valueOf(since));
 
         return new HttpApiClient<RecentTradeResult>()
-                .callHttpClientWithLastId(BASE_URL + "/public/Trades", RecentTradeResult.class, params);
+                .callHttpClientWithLastId(BASE_URL + "/0/public/Trades", RecentTradeResult.class, params);
     }
 
     /**
@@ -203,7 +235,7 @@ public class KrakenAPIClient {
         params.put("pair", pair);
 
         return new HttpApiClient<RecentSpreadResult>()
-                .callHttpClientWithLastId(BASE_URL + "/public/Spread", RecentSpreadResult.class, params);
+                .callHttpClientWithLastId(BASE_URL + "/0/public/Spread", RecentSpreadResult.class, params);
     }
 
     /**
@@ -220,11 +252,26 @@ public class KrakenAPIClient {
         params.put("since", String.valueOf(since));
 
         return new HttpApiClient<RecentSpreadResult>()
-                .callHttpClientWithLastId(BASE_URL + "/public/Spread", RecentSpreadResult.class, params);
+                .callHttpClientWithLastId(BASE_URL + "/0/public/Spread", RecentSpreadResult.class, params);
+    }
+
+    /**
+     * Get account balance
+     *
+     * @return map of pair/balance
+     * @throws KrakenApiException
+     */
+    public AccountBalanceResult getAccountBalance() throws KrakenApiException {
+        return new HttpApiClient<AccountBalanceResult>(this.apiKey, this.apiSecret)
+                .callSecuredHttpClient(BASE_URL, "/0/private/Balance", AccountBalanceResult.class);
     }
 
     public static void main(String[] args) throws KrakenApiException, IOException {
-        KrakenAPIClient client = new KrakenAPIClient();
+        KrakenAPIClient client = new KrakenAPIClient(
+                "", ""
+        );
+
+
         //ServerTimeResult result = client.getServerTime();
         //AssetInformationResult resultAssertInfo = client.getAssetInformation();
         //System.out.println("resultAssertInfo:"+resultAssertInfo.getResult());
@@ -235,17 +282,15 @@ public class KrakenAPIClient {
         //System.out.println("resultOHLC:"+resultOHLC.getResult());
 
 
-        RecentSpreadResult result = null;
+        AccountBalanceResult result;
         try {
-            result = client.getRecentSpreads("XXBTZEUR", 1500202358);
-
-            System.out.println("getResult():" + result.getResult());
-            System.out.println("last id:" + result.getLastId());
-        } catch (KrakenApiException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            result = client.getAccountBalance();
+            result.getResult().forEach((currency, balance) -> System.out.println(currency + " = " + balance));
+            System.out.println(result.getResult());
+        } catch (Exception ex) {
+            System.err.println("Erreur:" + ex.getMessage());
+            ex.printStackTrace();
         }
-
 
         // OK
         //String responseString = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[\"1751.70000\",\"0.12213919\",1500127273.3728,\"s\",\"l\",\"\"],[\"1751.44100\",\"0.72700000\",1500127273.4011,\"s\",\"l\",\"\"]]}}";
@@ -253,7 +298,6 @@ public class KrakenAPIClient {
         //System.out.println("res>"+res);
 
         String responseString2 = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[1500197914,\"1671.00000\",\"1671.00000\"],[1500197914,\"1670.29400\",\"1671.00000\"],[1500197921,\"1671.00000\",\"1671.00000\"]],\"last\":1499990400}}";
-
 
 
         //String replace = responseString2.replaceAll(",\"last\":([0-9]+)", "");

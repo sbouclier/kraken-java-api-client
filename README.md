@@ -75,4 +75,25 @@ System.out.println(result.getResult());
 System.out.println("last id: "+result.getLastId());
 ```
 
+# Private user data
+
+You must initialize your client with your API key and API secret:
+
+```java
+KrakenAPIClient client = new KrakenAPIClient("API KEY", "API SECRET");
+```
+
+## Get account balance
+
+```java
+AccountBalanceResult result = client.getAccountBalance();
+result.getResult().forEach((currency, balance) -> System.out.println(currency + " = " + balance));
+
+// print
+ZEUR = 437.0389
+XXBT = 3.0702043520
+XXRP = 1500.00000000
+...
+```
+
 Others methods coming soon...

@@ -26,6 +26,7 @@ import static org.apache.http.impl.client.HttpClients.createDefault;
 public class HttpApiClient<T extends Result> {
 
     private CloseableHttpClient httpClient;
+    private HttpPrivateApiClient httpPrivateApiClient;
 
     // ----------------
     // - CONSTRUCTORS -
@@ -36,6 +37,11 @@ public class HttpApiClient<T extends Result> {
      */
     public HttpApiClient() {
         this.httpClient = createDefault();
+    }
+
+    public HttpApiClient(String apiKey, String secret) {
+        this.httpClient = createDefault();
+        this.httpPrivateApiClient = new HttpPrivateApiClient(apiKey, secret);
     }
 
     /**
@@ -121,6 +127,25 @@ public class HttpApiClient<T extends Result> {
         return res;
     }
 
+    public T callSecuredHttpClient(String baseUrl, String methodUrl, Class<T> result) throws KrakenApiException {
+        if(this.httpPrivateApiClient == null) {
+            throw new KrakenApiException("must provide API key and secret");
+        }
+
+        try {
+            final String responseString = this.httpPrivateApiClient.callUrl(baseUrl, methodUrl);
+            T res = new ObjectMapper().readValue(responseString, result);
+
+            if (!res.getError().isEmpty()) {
+                throw new KrakenApiException(res.getError());
+            }
+
+            return res;
+        } catch (IOException ex) {
+            throw new KrakenApiException("unable to query Kraken API", ex);
+        }
+    }
+
     /**
      * Execute http get query and unmarshall result
      *
@@ -132,6 +157,7 @@ public class HttpApiClient<T extends Result> {
     private T executeQuery(HttpGet httpGet, Class<T> result) throws KrakenApiException {
         try {
             CloseableHttpResponse response = httpClient.execute(httpGet);
+
             String responseString = new BasicResponseHandler().handleResponse(response);
             System.out.println("status " + response.getStatusLine().getStatusCode());
             System.out.println(responseString);
