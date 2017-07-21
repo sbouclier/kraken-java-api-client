@@ -15,6 +15,7 @@ import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
+import java.util.Map;
 
 /**
  * Private Http API client
@@ -60,6 +61,45 @@ public class HttpPrivateApiClient<T extends Result>  {
         final String nonce = generateNonce();
         final String postData = "nonce=" + nonce + "&";
         final String signature = generateSignature(urlMethod, nonce, postData);
+
+        HttpsURLConnection connection = null;
+        try {
+            connection = (HttpsURLConnection) new URL(baseUrl + urlMethod).openConnection();
+            connection.setRequestMethod("POST");
+            connection.addRequestProperty("API-Key", apiKey);
+            connection.addRequestProperty("API-Sign", signature);
+
+            if (postData != null && !postData.toString().isEmpty()) {
+                connection.setDoOutput(true);
+                try (OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream())) {
+                    out.write(postData.toString());
+                }
+            }
+
+            //printHttpsCertificates(connection);
+
+            // execute request and read response
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = in.readLine()) != null) {
+                    response.append(line);
+                }
+
+                return response.toString();
+            }
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    public String callUrl(String baseUrl, String urlMethod, Map<String, String> params) throws IOException {
+        final String nonce = generateNonce();
+        final String postData = "aclass=ZUSD&asset=ZUSD&nonce=" + nonce + "&";
+        final String signature = generateSignature(urlMethod, nonce, postData);
+
+        System.out.println(postData);
 
         HttpsURLConnection connection = null;
         try {

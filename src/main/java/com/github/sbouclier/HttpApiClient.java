@@ -146,6 +146,25 @@ public class HttpApiClient<T extends Result> {
         }
     }
 
+    public T callSecuredHttpClient(String baseUrl, String methodUrl, Class<T> result, Map<String, String> params) throws KrakenApiException {
+        if(this.httpPrivateApiClient == null) {
+            throw new KrakenApiException("must provide API key and secret");
+        }
+
+        try {
+            final String responseString = this.httpPrivateApiClient.callUrl(baseUrl, methodUrl, params);
+            T res = new ObjectMapper().readValue(responseString, result);
+
+            if (!res.getError().isEmpty()) {
+                throw new KrakenApiException(res.getError());
+            }
+
+            return res;
+        } catch (IOException ex) {
+            throw new KrakenApiException("unable to query Kraken API", ex);
+        }
+    }
+
     /**
      * Execute http get query and unmarshall result
      *

@@ -96,4 +96,11 @@ XXRP = 1500.00000000
 ...
 ```
 
+## Get trade balance
+
+```java
+TradeBalanceResult result = client.getTradeBalance();
+System.out.println(result.getResult());
+```
+
 Others methods coming soon...
