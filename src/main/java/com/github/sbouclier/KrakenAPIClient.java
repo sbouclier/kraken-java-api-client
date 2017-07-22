@@ -2,7 +2,6 @@ package com.github.sbouclier;
 
 import com.github.sbouclier.result.*;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -288,9 +287,19 @@ public class KrakenAPIClient {
                 .callSecuredHttpClient(BASE_URL, "/0/private/OpenOrders", OpenOrdersResult.class);
     }
 
+    /**
+     * Get closed orders
+     *
+     * @return closed orders
+     * @throws KrakenApiException
+     */
+    public ClosedOrdersResult getClosedOrdersResult() throws KrakenApiException {
+        return new HttpApiClient<ClosedOrdersResult>(this.apiKey, this.apiSecret)
+                .callSecuredHttpClient(BASE_URL, "/0/private/ClosedOrders", ClosedOrdersResult.class);
+    }
 
     public static void main(String[] args) throws KrakenApiException {
-        //KrakenAPIClient client = new KrakenAPIClient("","");
+        KrakenAPIClient client = new KrakenAPIClient("","");
 
 
 
@@ -310,8 +319,11 @@ public class KrakenAPIClient {
         //TradeBalanceResult tradeBalanceResult = client.getTradeBalance();
         //System.out.println(tradeBalanceResult.getResult());
 
-        OpenOrdersResult openOrders = client.getOpenOrdersResult();
-        System.out.println(openOrders.getResult());
+        //OpenOrdersResult openOrders = client.getOpenOrdersResult();
+        //System.out.println(openOrders.getResult());
+
+        ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
+        System.out.println(closedOrders.getResult());
 
         // OK
         //String responseString = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[\"1751.70000\",\"0.12213919\",1500127273.3728,\"s\",\"l\",\"\"],[\"1751.44100\",\"0.72700000\",1500127273.4011,\"s\",\"l\",\"\"]]}}";

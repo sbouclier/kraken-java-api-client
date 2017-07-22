@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/sbouclier/kraken-java-api-client/badge.svg?branch=master)](https://coveralls.io/github/sbouclier/kraken-java-api-client?branch=master)
 
 # kraken-java-api-client
-Java client library for use with the kraken.com API.
+Java client library for use with the kraken.com API (NOT YET STABLE).
 
 # Public market data
 
@@ -108,6 +108,13 @@ System.out.println(result.getResult());
 ```java
 OpenOrdersResult openOrders = client.getOpenOrdersResult();
 System.out.println(openOrders.getResult());
+```
+
+## Get closed orders
+
+```java
+ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
+System.out.println(closedOrders.getResult());
 ```
 
 Others methods coming soon...
