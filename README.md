@@ -103,4 +103,11 @@ TradeBalanceResult result = client.getTradeBalance();
 System.out.println(result.getResult());
 ```
 
+## Get open orders
+
+```java
+OpenOrdersResult openOrders = client.getOpenOrdersResult();
+System.out.println(openOrders.getResult());
+```
+
 Others methods coming soon...

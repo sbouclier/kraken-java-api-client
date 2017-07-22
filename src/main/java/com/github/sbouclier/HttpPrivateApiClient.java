@@ -96,7 +96,7 @@ public class HttpPrivateApiClient<T extends Result>  {
 
     public String callUrl(String baseUrl, String urlMethod, Map<String, String> params) throws IOException {
         final String nonce = generateNonce();
-        final String postData = "aclass=ZUSD&asset=ZUSD&nonce=" + nonce + "&";
+        final String postData = "nonce=" + nonce;
         final String signature = generateSignature(urlMethod, nonce, postData);
 
         System.out.println(postData);

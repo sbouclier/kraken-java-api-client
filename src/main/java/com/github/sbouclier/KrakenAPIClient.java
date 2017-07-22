@@ -277,8 +277,20 @@ public class KrakenAPIClient {
                 .callSecuredHttpClient(BASE_URL, "/0/private/TradeBalance", TradeBalanceResult.class);
     }
 
+    /**
+     * Get open orders
+     *
+     * @return open orders
+     * @throws KrakenApiException
+     */
+    public OpenOrdersResult getOpenOrdersResult() throws KrakenApiException {
+        return new HttpApiClient<OpenOrdersResult>(this.apiKey, this.apiSecret)
+                .callSecuredHttpClient(BASE_URL, "/0/private/OpenOrders", OpenOrdersResult.class);
+    }
+
+
     public static void main(String[] args) throws KrakenApiException {
-        KrakenAPIClient client = new KrakenAPIClient("","");
+        //KrakenAPIClient client = new KrakenAPIClient("","");
 
 
 
@@ -295,11 +307,11 @@ public class KrakenAPIClient {
         //accountBalanceResult.getResult().forEach((currency, balance) -> System.out.println(currency + " = " + balance));
         //System.out.println(accountBalanceResult.getResult());
 
-        TradeBalanceResult tradeBalanceResult = client.getTradeBalance();
-        System.out.println(tradeBalanceResult.getResult());
+        //TradeBalanceResult tradeBalanceResult = client.getTradeBalance();
+        //System.out.println(tradeBalanceResult.getResult());
 
-        //OpenOrdersResult openOrders = client.getOpenOrdersResult();
-        //System.out.println(openOrders.getResult());
+        OpenOrdersResult openOrders = client.getOpenOrdersResult();
+        System.out.println(openOrders.getResult());
 
         // OK
         //String responseString = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[\"1751.70000\",\"0.12213919\",1500127273.3728,\"s\",\"l\",\"\"],[\"1751.44100\",\"0.72700000\",1500127273.4011,\"s\",\"l\",\"\"]]}}";
