@@ -2,9 +2,12 @@ package com.github.sbouclier;
 
 import com.github.sbouclier.result.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Kraken API client
@@ -298,6 +301,20 @@ public class KrakenAPIClient {
                 .callSecuredHttpClient(BASE_URL, "/0/private/ClosedOrders", ClosedOrdersResult.class);
     }
 
+    /**
+     * Get orders information
+     *
+     * @return orders information
+     * @throws KrakenApiException
+     */
+    public OrdersInformationResult getOrdersInformationResult(List<String> transactions) throws KrakenApiException {
+        Map<String, String> params = new HashMap<>();
+        params.put("txid", transactions.stream().collect(Collectors.joining(",")));
+
+        return new HttpApiClient<OrdersInformationResult>(this.apiKey, this.apiSecret)
+                .callSecuredHttpClient(BASE_URL, "/0/private/QueryOrders", OrdersInformationResult.class, params);
+    }
+
     public static void main(String[] args) throws KrakenApiException {
         KrakenAPIClient client = new KrakenAPIClient("","");
 
@@ -322,15 +339,19 @@ public class KrakenAPIClient {
         //OpenOrdersResult openOrders = client.getOpenOrdersResult();
         //System.out.println(openOrders.getResult());
 
-        ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
-        System.out.println(closedOrders.getResult());
+        //ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
+        //System.out.println(closedOrders.getResult());
+
+        OrdersInformationResult ordersInformationResult = client.getOrdersInformationResult(Arrays.asList("",""));
+        System.out.println(ordersInformationResult.getResult());
+        ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
 
         // OK
         //String responseString = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[\"1751.70000\",\"0.12213919\",1500127273.3728,\"s\",\"l\",\"\"],[\"1751.44100\",\"0.72700000\",1500127273.4011,\"s\",\"l\",\"\"]]}}";
         //Object res = new ObjectMapper().readValue(responseString, RecentTradeResult.class);
         //System.out.println("res>"+res);
 
-        String responseString2 = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[1500197914,\"1671.00000\",\"1671.00000\"],[1500197914,\"1670.29400\",\"1671.00000\"],[1500197921,\"1671.00000\",\"1671.00000\"]],\"last\":1499990400}}";
+        //String responseString2 = "{\"error\":[],\"result\":{\"XXBTZEUR\":[[1500197914,\"1671.00000\",\"1671.00000\"],[1500197914,\"1670.29400\",\"1671.00000\"],[1500197921,\"1671.00000\",\"1671.00000\"]],\"last\":1499990400}}";
 
 
         //String replace = responseString2.replaceAll(",\"last\":([0-9]+)", "");

@@ -117,4 +117,15 @@ ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
 System.out.println(closedOrders.getResult());
 ```
 
+## Get orders information
+
+```java
+OrdersInformationResult ordersInformationResult = client.getOrdersInformationResult(Arrays.asList("OGRQD4-Q5C5N-2EYZDP","OC7Z5B-NLAHB-6MQNLA"));
+ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
+
+// print
+OGRQD4-Q5C5N-2EYZDP = SELL
+OC7Z5B-NLAHB-6MQNLA = BUY
+```
+
 Others methods coming soon...

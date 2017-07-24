@@ -59,7 +59,7 @@ public class HttpPrivateApiClient<T extends Result>  {
 
     public String callUrl(String baseUrl, String urlMethod) throws IOException {
         final String nonce = generateNonce();
-        final String postData = "nonce=" + nonce + "&";
+        final String postData = "nonce=" + nonce;
         final String signature = generateSignature(urlMethod, nonce, postData);
 
         HttpsURLConnection connection = null;
@@ -96,8 +96,13 @@ public class HttpPrivateApiClient<T extends Result>  {
 
     public String callUrl(String baseUrl, String urlMethod, Map<String, String> params) throws IOException {
         final String nonce = generateNonce();
-        final String postData = "nonce=" + nonce;
-        final String signature = generateSignature(urlMethod, nonce, postData);
+        final StringBuilder postData = new StringBuilder();
+        params.forEach((k,v) -> {
+            postData.append(k).append("=").append(v).append("&");
+        });
+        postData.append("nonce=").append(nonce);
+
+        final String signature = generateSignature(urlMethod, nonce, postData.toString());
 
         System.out.println(postData);
 
