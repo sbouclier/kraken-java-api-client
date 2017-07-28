@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 public class HttpApiClient<T extends Result> {
 
     private HttpJsonClient client;
+    private int apiVersion = 0;
 
     public HttpApiClient() {
         client = new HttpJsonClient();
@@ -30,9 +31,9 @@ public class HttpApiClient<T extends Result> {
         this.client = client;
     }
 
-    public T callPublic(String baseUrl, String methodUrl, Class<T> result) throws KrakenApiException {
+    public T callPublic(String baseUrl, KrakenApiMethod method, Class<T> result) throws KrakenApiException {
         try {
-            final String responseString = this.client.executePublicQuery(baseUrl, methodUrl);
+            final String responseString = this.client.executePublicQuery(baseUrl, method.getUrl(apiVersion));
             T res = new ObjectMapper().readValue(responseString, result);
 
             if (!res.getError().isEmpty()) {
@@ -45,9 +46,9 @@ public class HttpApiClient<T extends Result> {
         }
     }
 
-    public T callPublic(String baseUrl, String methodUrl, Class<T> result, Map<String, String> params) throws KrakenApiException {
+    public T callPublic(String baseUrl, KrakenApiMethod method, Class<T> result, Map<String, String> params) throws KrakenApiException {
         try {
-            final String responseString = this.client.executePublicQuery(baseUrl, methodUrl, params);
+            final String responseString = this.client.executePublicQuery(baseUrl, method.getUrl(apiVersion), params);
             T res = new ObjectMapper().readValue(responseString, result);
 
             if (!res.getError().isEmpty()) {
@@ -64,15 +65,15 @@ public class HttpApiClient<T extends Result> {
      * Execute http get query, extract last id and unmarshall result
      *
      * @param baseUrl
-     * @param methodUrl
+     * @param method
      * @param result
      * @param params
      * @return
      * @throws KrakenApiException
      */
-    public T callPublicWithLastId(String baseUrl, String methodUrl, Class<T> result, Map<String, String> params) throws KrakenApiException {
+    public T callPublicWithLastId(String baseUrl, KrakenApiMethod method, Class<T> result, Map<String, String> params) throws KrakenApiException {
         try {
-            final String responseString = this.client.executePublicQuery(baseUrl, methodUrl, params);
+            final String responseString = this.client.executePublicQuery(baseUrl, method.getUrl(apiVersion), params);
 
             LastIdExtractedResult extractedResult = extractLastId(responseString);
 
@@ -89,9 +90,9 @@ public class HttpApiClient<T extends Result> {
         }
     }
 
-    public T callPrivate(String baseUrl, String methodUrl, Class<T> result) throws KrakenApiException {
+    public T callPrivate(String baseUrl, KrakenApiMethod method, Class<T> result) throws KrakenApiException {
         try {
-            final String responseString = this.client.executePrivateQuery(baseUrl, methodUrl);
+            final String responseString = this.client.executePrivateQuery(baseUrl, method.getUrl(apiVersion));
             T res = new ObjectMapper().readValue(responseString, result);
 
             if (!res.getError().isEmpty()) {
@@ -104,9 +105,9 @@ public class HttpApiClient<T extends Result> {
         }
     }
 
-    public T callPrivate(String baseUrl, String methodUrl, Class<T> result, Map<String, String> params) throws KrakenApiException {
+    public T callPrivate(String baseUrl, KrakenApiMethod method, Class<T> result, Map<String, String> params) throws KrakenApiException {
         try {
-            final String responseString = this.client.executePrivateQuery(baseUrl, methodUrl, params);
+            final String responseString = this.client.executePrivateQuery(baseUrl, method.getUrl(apiVersion), params);
             T res = new ObjectMapper().readValue(responseString, result);
 
             if (!res.getError().isEmpty()) {

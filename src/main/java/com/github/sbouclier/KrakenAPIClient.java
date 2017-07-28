@@ -83,7 +83,7 @@ public class KrakenAPIClient {
      */
     public ServerTimeResult getServerTime() throws KrakenApiException {
         return new HttpApiClient<ServerTimeResult>()
-                .callPublic(BASE_URL, "/0/public/Time", ServerTimeResult.class);
+                .callPublic(BASE_URL, KrakenApiMethod.SERVER_TIME, ServerTimeResult.class);
     }
 
     /**
@@ -94,7 +94,7 @@ public class KrakenAPIClient {
      */
     public AssetInformationResult getAssetInformation() throws KrakenApiException {
         return new HttpApiClient<AssetInformationResult>()
-                .callPublic(BASE_URL, "/0/public/Assets", AssetInformationResult.class);
+                .callPublic(BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class);
     }
 
     /**
@@ -105,7 +105,7 @@ public class KrakenAPIClient {
      */
     public AssetPairsResult getAssetPairs() throws KrakenApiException {
         return new HttpApiClient<AssetPairsResult>()
-                .callPublic(BASE_URL, "/0/public/AssetPairs", AssetPairsResult.class);
+                .callPublic(BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class);
     }
 
     /**
@@ -120,7 +120,7 @@ public class KrakenAPIClient {
         params.put("pair", String.join(",", pairs));
 
         return new HttpApiClient<TickerInformationResult>()
-                .callPublic(BASE_URL, "/0/public/Ticker", TickerInformationResult.class, params);
+                .callPublic(BASE_URL, KrakenApiMethod.TICKER_INFORMATION, TickerInformationResult.class, params);
     }
 
 
@@ -140,7 +140,7 @@ public class KrakenAPIClient {
         params.put("since", String.valueOf(since));
 
         return new HttpApiClient<OHLCResult>()
-                .callPublic(BASE_URL, "/0/public/OHLC", OHLCResult.class, params);
+                .callPublic(BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
     }
 
     /**
@@ -157,7 +157,7 @@ public class KrakenAPIClient {
         params.put("interval", String.valueOf(interval.minutes));
 
         return new HttpApiClient<OHLCResult>()
-                .callPublic(BASE_URL, "/0/public/OHLC", OHLCResult.class, params);
+                .callPublic(BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
     }
 
     /**
@@ -174,7 +174,7 @@ public class KrakenAPIClient {
         params.put("count", String.valueOf(count));
 
         return new HttpApiClient<OrderBookResult>()
-                .callPublic(BASE_URL, "/0/public/Depth", OrderBookResult.class, params);
+                .callPublic(BASE_URL, KrakenApiMethod.ORDER_BOOK, OrderBookResult.class, params);
     }
 
     /**
@@ -189,7 +189,7 @@ public class KrakenAPIClient {
         params.put("pair", pair);
 
         return new HttpApiClient<OrderBookResult>()
-                .callPublic(BASE_URL, "/0/public/Depth", OrderBookResult.class, params);
+                .callPublic(BASE_URL, KrakenApiMethod.ORDER_BOOK, OrderBookResult.class, params);
     }
 
     /**
@@ -204,7 +204,7 @@ public class KrakenAPIClient {
         params.put("pair", pair);
 
         return new HttpApiClient<RecentTradeResult>()
-                .callPublicWithLastId(BASE_URL, "/0/public/Trades", RecentTradeResult.class, params);
+                .callPublicWithLastId(BASE_URL, KrakenApiMethod.RECENT_TRADES, RecentTradeResult.class, params);
     }
 
     /**
@@ -221,7 +221,7 @@ public class KrakenAPIClient {
         params.put("since", String.valueOf(since));
 
         return new HttpApiClient<RecentTradeResult>()
-                .callPublicWithLastId(BASE_URL, "/0/public/Trades", RecentTradeResult.class, params);
+                .callPublicWithLastId(BASE_URL, KrakenApiMethod.RECENT_TRADES, RecentTradeResult.class, params);
     }
 
     /**
@@ -236,7 +236,7 @@ public class KrakenAPIClient {
         params.put("pair", pair);
 
         return new HttpApiClient<RecentSpreadResult>()
-                .callPublicWithLastId(BASE_URL, "/0/public/Spread", RecentSpreadResult.class, params);
+                .callPublicWithLastId(BASE_URL, KrakenApiMethod.RECENT_SPREADS, RecentSpreadResult.class, params);
     }
 
     /**
@@ -253,7 +253,7 @@ public class KrakenAPIClient {
         params.put("since", String.valueOf(since));
 
         return new HttpApiClient<RecentSpreadResult>()
-                .callPublicWithLastId(BASE_URL, "/0/public/Spread", RecentSpreadResult.class, params);
+                .callPublicWithLastId(BASE_URL, KrakenApiMethod.RECENT_SPREADS, RecentSpreadResult.class, params);
     }
 
     /**
@@ -264,7 +264,7 @@ public class KrakenAPIClient {
      */
     public AccountBalanceResult getAccountBalance() throws KrakenApiException {
         return new HttpApiClient<AccountBalanceResult>(this.apiKey, this.apiSecret)
-                .callPrivate(BASE_URL, "/0/private/Balance", AccountBalanceResult.class);
+                .callPrivate(BASE_URL, KrakenApiMethod.ACCOUNT_BALANCE, AccountBalanceResult.class);
     }
 
     /**
@@ -275,7 +275,7 @@ public class KrakenAPIClient {
      */
     public TradeBalanceResult getTradeBalance() throws KrakenApiException {
         return new HttpApiClient<TradeBalanceResult>(this.apiKey, this.apiSecret)
-                .callPrivate(BASE_URL, "/0/private/TradeBalance", TradeBalanceResult.class);
+                .callPrivate(BASE_URL, KrakenApiMethod.TRADE_BALANCE, TradeBalanceResult.class);
     }
 
     /**
@@ -286,7 +286,7 @@ public class KrakenAPIClient {
      */
     public OpenOrdersResult getOpenOrdersResult() throws KrakenApiException {
         return new HttpApiClient<OpenOrdersResult>(this.apiKey, this.apiSecret)
-                .callPrivate(BASE_URL, "/0/private/OpenOrders", OpenOrdersResult.class);
+                .callPrivate(BASE_URL, KrakenApiMethod.OPEN_ORDERS, OpenOrdersResult.class);
     }
 
     /**
@@ -297,7 +297,7 @@ public class KrakenAPIClient {
      */
     public ClosedOrdersResult getClosedOrdersResult() throws KrakenApiException {
         return new HttpApiClient<ClosedOrdersResult>(this.apiKey, this.apiSecret)
-                .callPrivate(BASE_URL, "/0/private/ClosedOrders", ClosedOrdersResult.class);
+                .callPrivate(BASE_URL, KrakenApiMethod.CLOSED_ORDERS, ClosedOrdersResult.class);
     }
 
     /**
@@ -311,7 +311,7 @@ public class KrakenAPIClient {
         params.put("txid", transactions.stream().collect(Collectors.joining(",")));
 
         return new HttpApiClient<OrdersInformationResult>(this.apiKey, this.apiSecret)
-                .callPrivate(BASE_URL, "/0/private/QueryOrders", OrdersInformationResult.class, params);
+                .callPrivate(BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
     }
 
     public static void main(String[] args) throws KrakenApiException {
@@ -319,23 +319,23 @@ public class KrakenAPIClient {
                 "",
                 "");
 
-        ServerTimeResult serverTimeResult = client.getServerTime();
-        System.out.println(serverTimeResult);
+        //ServerTimeResult serverTimeResult = client.getServerTime();
+        //System.out.println(serverTimeResult);
 
-        AssetInformationResult resultAssertInfo = client.getAssetInformation();
-        System.out.println("resultAssertInfo:"+resultAssertInfo.getResult());
+        //AssetInformationResult resultAssertInfo = client.getAssetInformation();
+        //System.out.println("resultAssertInfo:"+resultAssertInfo.getResult());
 
-        AssetPairsResult assetPairsResult = client.getAssetPairs();
-        System.out.println(assetPairsResult);
+        //AssetPairsResult assetPairsResult = client.getAssetPairs();
+        //System.out.println(assetPairsResult);
 
-        TickerInformationResult tickerInformationResult = client.getTickerInformation(Arrays.asList("BTCEUR", "ETHEUR"));
-        System.out.println(tickerInformationResult);
+        //TickerInformationResult tickerInformationResult = client.getTickerInformation(Arrays.asList("BTCEUR", "ETHEUR"));
+        //System.out.println(tickerInformationResult);
 
-        OHLCResult resultOHLC = client.getOHLC("XXBTZEUR", Interval.ONE_DAY);
-        System.out.println("resultOHLC:"+resultOHLC.getResult());
+        //OHLCResult resultOHLC = client.getOHLC("XXBTZEUR", Interval.ONE_DAY);
+        //System.out.println("resultOHLC:"+resultOHLC.getResult());
 
-        OrderBookResult orderBookResult = client.getOrderBook("BTCEUR");
-        System.out.println(orderBookResult);
+        //OrderBookResult orderBookResult = client.getOrderBook("BTCEUR");
+        //System.out.println(orderBookResult);
 
         RecentTradeResult result = client.getRecentTrades("BTCEUR");
         System.out.println(result.getResult());
@@ -354,12 +354,12 @@ public class KrakenAPIClient {
 
         OpenOrdersResult openOrders = client.getOpenOrdersResult();
         System.out.println(openOrders.getResult());
-
+        System.out.println("trroor");
         ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
         System.out.println(closedOrders.getResult());
-
-        //OrdersInformationResult ordersInformationResult = client.getOrdersInformationResult(Arrays.asList("PGRQC4-Q5C5N-2EYZDP"));
-        //System.out.println(ordersInformationResult.getResult());
-        //ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
+        System.out.println("trrr");
+        OrdersInformationResult ordersInformationResult = client.getOrdersInformationResult(Arrays.asList("PGRQC4-Q5C5N-2EYZDP"));
+        System.out.println(ordersInformationResult.getResult());
+        ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
     }
 }
