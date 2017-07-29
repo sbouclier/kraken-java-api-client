@@ -6,7 +6,6 @@ import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -28,9 +27,6 @@ import static org.mockito.Mockito.*;
  */
 public class HttpApiClientTest {
 
-    private final static String KRAKEN_BASE_URL = "https://api.kraken.com";
-
-    @Mock
     private HttpJsonClient mockHttpJsonClient;
 
     @Before
@@ -52,17 +48,17 @@ public class HttpApiClientTest {
 
         // When
         when(mockHttpJsonClient.executePublicQuery(
-                eq(KRAKEN_BASE_URL),
+                eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.SERVER_TIME.getUrl(0)))
         ).thenReturn(mockResponseBody);
 
-        ServerTimeResult result = client.callPublic(KRAKEN_BASE_URL, KrakenApiMethod.SERVER_TIME, ServerTimeResult.class);
+        ServerTimeResult result = client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.SERVER_TIME, ServerTimeResult.class);
 
         // Then
-        assertThat(result.getResult(), hasProperty("unixtime", equalTo(1501271914L)));
-        assertThat(result.getResult(), hasProperty("rfc1123", equalTo("Fri, 28 Jul 17 19:58:34 +0000")));
+        assertThat(result.getResult().unixtime, equalTo(1501271914L));
+        assertThat(result.getResult().rfc1123, equalTo("Fri, 28 Jul 17 19:58:34 +0000"));
 
-        verify(mockHttpJsonClient).executePublicQuery(eq(KRAKEN_BASE_URL), eq(KrakenApiMethod.SERVER_TIME.getUrl(0)));
+        verify(mockHttpJsonClient).executePublicQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.SERVER_TIME.getUrl(0)));
     }
 
     @Test
@@ -98,11 +94,11 @@ public class HttpApiClientTest {
 
         // When
         when(mockHttpJsonClient.executePublicQuery(
-                eq(KRAKEN_BASE_URL),
+                eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.ASSET_INFORMATION.getUrl(0)))
         ).thenReturn(mockResponseBody.toString());
         AssetInformationResult result = client.callPublic(
-                KRAKEN_BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class);
+                KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class);
 
         // Then
         assertEquals(26, result.getResult().size());
@@ -111,7 +107,7 @@ public class HttpApiClientTest {
         assertThat(result.getResult().get("ZEUR"), samePropertyValuesAs(zeur));
         assertThat(result.getResult().get("ZUSD"), samePropertyValuesAs(zusd));
 
-        verify(mockHttpJsonClient).executePublicQuery(eq(KRAKEN_BASE_URL), eq(KrakenApiMethod.ASSET_INFORMATION.getUrl(0)));
+        verify(mockHttpJsonClient).executePublicQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.ASSET_INFORMATION.getUrl(0)));
     }
 
     @Test
@@ -123,11 +119,11 @@ public class HttpApiClientTest {
 
         // When
         when(mockHttpJsonClient.executePublicQuery(
-                eq(KRAKEN_BASE_URL),
+                eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.ASSET_PAIRS.getUrl(0)))
         ).thenReturn(mockResponseBody.toString());
         AssetPairsResult result = client.callPublic(
-                KRAKEN_BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class);
+                KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class);
 
         // Then
         AssetPairsResult.AssetPair pair = result.getResult().get("XETCXXBT");
@@ -175,7 +171,7 @@ public class HttpApiClientTest {
         assertEquals(80, pair.getMarginCall().intValue());
         assertEquals(40, pair.getMarginStop().intValue());
 
-        verify(mockHttpJsonClient).executePublicQuery(eq(KRAKEN_BASE_URL), eq(KrakenApiMethod.ASSET_PAIRS.getUrl(0)));
+        verify(mockHttpJsonClient).executePublicQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.ASSET_PAIRS.getUrl(0)));
     }
 
     @Test
@@ -187,7 +183,7 @@ public class HttpApiClientTest {
 
         // When
         when(mockHttpJsonClient.executePublicQuery(
-                eq(KRAKEN_BASE_URL),
+                eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.TICKER_INFORMATION.getUrl(0)),
                 any())
         ).thenReturn(mockResponseBody.toString());
@@ -195,7 +191,7 @@ public class HttpApiClientTest {
         Map<String, String> params = new HashMap<>();
         params.put("pair", "BTCEUR,ETHEUR");
         TickerInformationResult result = client.callPublic(
-                KRAKEN_BASE_URL,
+                KrakenAPIClient.BASE_URL,
                 KrakenApiMethod.TICKER_INFORMATION,
                 TickerInformationResult.class, params);
 
@@ -205,7 +201,7 @@ public class HttpApiClientTest {
         assertThat(BigDecimal.valueOf(2352.76900), Matchers.comparesEqualTo(result.getResult().get("XXBTZEUR").ask.price));
 
         verify(mockHttpJsonClient).executePublicQuery(
-                eq(KRAKEN_BASE_URL),
+                eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.TICKER_INFORMATION.getUrl(0)),
                 any());
     }
@@ -219,21 +215,21 @@ public class HttpApiClientTest {
 
         // When
         when(mockHttpJsonClient.executePublicQuery(
-                eq(KRAKEN_BASE_URL),
+                eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.OHLC.getUrl(0)),
                 any())
         ).thenReturn(mockResponseBody.toString());
 
         Map<String, String> params = new HashMap<>();
         params.put("pair", "BTCEUR");
-        OHLCResult result = client.callPublic(KRAKEN_BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
+        OHLCResult result = client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
 
         // Then
         assertEquals(720, result.getOHLCData().size());
         assertEquals(result.getLast().intValue(), 1501200000);
 
         verify(mockHttpJsonClient).executePublicQuery(
-                eq(KRAKEN_BASE_URL),
+                eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.OHLC.getUrl(0)),
                 any());
     }
@@ -247,7 +243,7 @@ public class HttpApiClientTest {
 
         // When
         when(mockHttpJsonClient.executePublicQuery(
-                eq(KRAKEN_BASE_URL),
+                eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.ORDER_BOOK.getUrl(0)),
                 any())
         ).thenReturn(mockResponseBody.toString());
@@ -255,7 +251,7 @@ public class HttpApiClientTest {
         Map<String, String> params = new HashMap<>();
         params.put("pair", "BTCEUR");
         params.put("count", "3");
-        OrderBookResult result = client.callPublic(KRAKEN_BASE_URL, KrakenApiMethod.ORDER_BOOK, OrderBookResult.class, params);
+        OrderBookResult result = client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDER_BOOK, OrderBookResult.class, params);
 
         // Then
         assertEquals(100, result.getResult().get("XXBTZEUR").asks.size());
@@ -270,7 +266,7 @@ public class HttpApiClientTest {
         assertEquals(result.getResult().get("XXBTZEUR").asks.get(2).timestamp.intValue(), 1501319911);
 
         verify(mockHttpJsonClient).executePublicQuery(
-                eq(KRAKEN_BASE_URL),
+                eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.ORDER_BOOK.getUrl(0)),
                 any());
     }

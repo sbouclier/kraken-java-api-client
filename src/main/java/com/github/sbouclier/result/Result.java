@@ -34,6 +34,15 @@ public class Result<T> {
         return result;
     }
 
+    /**
+     * Set result
+     *
+     * @param result
+     */
+    public void setResult(T result) {
+        this.result = result;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)

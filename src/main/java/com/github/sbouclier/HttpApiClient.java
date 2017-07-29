@@ -32,6 +32,11 @@ public class HttpApiClient<T extends Result> {
     }
 
     public T callPublic(String baseUrl, KrakenApiMethod method, Class<T> result) throws KrakenApiException {
+
+        System.out.println("client:"+this.client);
+        System.out.println("baseUrl:"+baseUrl);
+        System.out.println("method:"+method);
+
         try {
             final String responseString = this.client.executePublicQuery(baseUrl, method.getUrl(apiVersion));
             T res = new ObjectMapper().readValue(responseString, result);

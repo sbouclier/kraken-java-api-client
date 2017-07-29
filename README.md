@@ -2,11 +2,11 @@
 [![Coverage Status](https://coveralls.io/repos/github/sbouclier/kraken-java-api-client/badge.svg?branch=master)](https://coveralls.io/github/sbouclier/kraken-java-api-client?branch=master)
 
 # kraken-java-api-client
-Java client library for use with the kraken.com API (NOT YET STABLE).
+Java client library for use with the kraken.com API. Unlike others libraries which only provide JSON result, this library unmarshal the JSON encoded data to the corresponding POJO.
 
 # Public market data
 
-You can initialize your client without any arguments:
+If you only need public data, you can initialize your client without any arguments:
 
 ```java
 KrakenAPIClient client = new KrakenAPIClient();
