@@ -4,12 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sbouclier.result.AssetInformationResult;
 import com.github.sbouclier.result.AssetPairsResult;
 import com.github.sbouclier.result.ServerTimeResult;
+import com.github.sbouclier.result.TickerInformationResult;
 import com.github.sbouclier.utils.StreamUtils;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -173,5 +179,31 @@ public class KrakenAPIClientTest {
 
         verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ASSET_PAIRS);
         verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class);
+    }
+
+    @Test
+    public void should_return_ticker_information() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/ticker_information.mock.json");
+        TickerInformationResult mockResult = new ObjectMapper().readValue(jsonResult, TickerInformationResult.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR,ETHEUR");
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.TICKER_INFORMATION)).thenReturn(mockClient);
+        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.TICKER_INFORMATION, TickerInformationResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        TickerInformationResult result = client.getTickerInformation(Arrays.asList("BTCEUR", "ETHEUR"));
+
+        // Then
+        assertEquals(result.getResult().size(), 2);
+        assertThat(BigDecimal.valueOf(157.49201), Matchers.comparesEqualTo(result.getResult().get("XETHZEUR").ask.price));
+        assertThat(BigDecimal.valueOf(2352.76900), Matchers.comparesEqualTo(result.getResult().get("XXBTZEUR").ask.price));
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.TICKER_INFORMATION);
+        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.TICKER_INFORMATION, TickerInformationResult.class, params);
     }
 }
