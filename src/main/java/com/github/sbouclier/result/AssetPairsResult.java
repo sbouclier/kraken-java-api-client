@@ -24,8 +24,8 @@ public class AssetPairsResult extends Result<Map<String, AssetPairsResult.AssetP
         @JsonPropertyOrder({"volume", "percent"})
         public static class Fee {
 
-            private Integer volume;
-            private Float percent;
+            public Integer volume;
+            public Float percent;
 
             private Fee() {
             }
@@ -33,14 +33,6 @@ public class AssetPairsResult extends Result<Map<String, AssetPairsResult.AssetP
             public Fee(Integer volume, Float percent) {
                 this.volume = volume;
                 this.percent = percent;
-            }
-
-            public Integer getVolume() {
-                return volume;
-            }
-
-            public Float getPercent() {
-                return percent;
             }
 
             @Override
@@ -74,178 +66,50 @@ public class AssetPairsResult extends Result<Map<String, AssetPairsResult.AssetP
         }
 
         @JsonProperty("altname")
-        private String alternatePairName;
+        public String alternatePairName;
 
         @JsonProperty("aclass_base")
-        private String baseAssetClass;
+        public String baseAssetClass;
 
         @JsonProperty("base")
-        private String baseAssetId;
+        public String baseAssetId;
 
         @JsonProperty("aclass_quote")
-        private String quoteAssetClass;
+        public String quoteAssetClass;
 
         @JsonProperty("quote")
-        private String quoteAssetId;
+        public String quoteAssetId;
 
-        private String lot;
+        public String lot;
 
         @JsonProperty("pair_decimals")
-        private Integer pairDecimals;
+        public Integer pairDecimals;
 
         @JsonProperty("lot_decimals")
-        private Integer lotDecimals;
+        public Integer lotDecimals;
 
         @JsonProperty("lot_multiplier")
-        private Integer lotMultiplier;
+        public Integer lotMultiplier;
 
         @JsonProperty("leverage_buy")
-        private ArrayList<Integer> leverageBuy;
+        public ArrayList<Integer> leverageBuy;
 
         @JsonProperty("leverage_sell")
-        private ArrayList<Integer> leverageSell;
+        public ArrayList<Integer> leverageSell;
 
-        private ArrayList<Fee> fees;
+        public ArrayList<Fee> fees;
 
         @JsonProperty("fees_maker")
-        private ArrayList<Fee> feesMaker;
+        public ArrayList<Fee> feesMaker;
 
         @JsonProperty("fee_volume_currency")
-        private String feeVolumeCurrency;
+        public String feeVolumeCurrency;
 
         @JsonProperty("margin_call")
-        private Integer marginCall;
+        public Integer marginCall;
 
         @JsonProperty("margin_stop")
-        private Integer marginStop;
-
-        public String getAlternatePairName() {
-            return alternatePairName;
-        }
-
-        public void setAlternatePairName(String alternatePairName) {
-            this.alternatePairName = alternatePairName;
-        }
-
-        public String getBaseAssetClass() {
-            return baseAssetClass;
-        }
-
-        public void setBaseAssetClass(String baseAssetClass) {
-            this.baseAssetClass = baseAssetClass;
-        }
-
-        public String getBaseAssetId() {
-            return baseAssetId;
-        }
-
-        public void setBaseAssetId(String baseAssetId) {
-            this.baseAssetId = baseAssetId;
-        }
-
-        public String getQuoteAssetClass() {
-            return quoteAssetClass;
-        }
-
-        public void setQuoteAssetClass(String quoteAssetClass) {
-            this.quoteAssetClass = quoteAssetClass;
-        }
-
-        public String getQuoteAssetId() {
-            return quoteAssetId;
-        }
-
-        public void setQuoteAssetId(String quoteAssetId) {
-            this.quoteAssetId = quoteAssetId;
-        }
-
-        public String getLot() {
-            return lot;
-        }
-
-        public void setLot(String lot) {
-            this.lot = lot;
-        }
-
-        public Integer getPairDecimals() {
-            return pairDecimals;
-        }
-
-        public void setPairDecimals(Integer pairDecimals) {
-            this.pairDecimals = pairDecimals;
-        }
-
-        public Integer getLotDecimals() {
-            return lotDecimals;
-        }
-
-        public void setLotDecimals(Integer lotDecimals) {
-            this.lotDecimals = lotDecimals;
-        }
-
-        public Integer getLotMultiplier() {
-            return lotMultiplier;
-        }
-
-        public void setLotMultiplier(Integer lotMultiplier) {
-            this.lotMultiplier = lotMultiplier;
-        }
-
-        public ArrayList<Integer> getLeverageBuy() {
-            return leverageBuy;
-        }
-
-        public void setLeverageBuy(ArrayList<Integer> leverageBuy) {
-            this.leverageBuy = leverageBuy;
-        }
-
-        public ArrayList<Integer> getLeverageSell() {
-            return leverageSell;
-        }
-
-        public void setLeverageSell(ArrayList<Integer> leverageSell) {
-            this.leverageSell = leverageSell;
-        }
-
-        public ArrayList<Fee> getFees() {
-            return fees;
-        }
-
-        public void setFees(ArrayList<Fee> fees) {
-            this.fees = fees;
-        }
-
-        public ArrayList<Fee> getFeesMaker() {
-            return feesMaker;
-        }
-
-        public void setFeesMaker(ArrayList<Fee> feesMaker) {
-            this.feesMaker = feesMaker;
-        }
-
-        public String getFeeVolumeCurrency() {
-            return feeVolumeCurrency;
-        }
-
-        public void setFeeVolumeCurrency(String feeVolumeCurrency) {
-            this.feeVolumeCurrency = feeVolumeCurrency;
-        }
-
-        public Integer getMarginCall() {
-            return marginCall;
-        }
-
-        public void setMarginCall(Integer marginCall) {
-            this.marginCall = marginCall;
-        }
-
-        public Integer getMarginStop() {
-            return marginStop;
-        }
-
-        public void setMarginStop(Integer marginStop) {
-            this.marginStop = marginStop;
-        }
+        public Integer marginStop;
 
         @Override
         public String toString() {

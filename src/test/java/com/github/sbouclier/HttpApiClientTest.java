@@ -130,21 +130,21 @@ public class HttpApiClientTest {
 
         assertEquals(64, result.getResult().size());
 
-        assertEquals("ETCXBT", pair.getAlternatePairName());
-        assertEquals("currency", pair.getBaseAssetClass());
-        assertEquals("XETC", pair.getBaseAssetId());
-        assertEquals("currency", pair.getQuoteAssetClass());
-        assertEquals("XXBT", pair.getQuoteAssetId());
-        assertEquals("unit", pair.getLot());
+        assertEquals("ETCXBT", pair.alternatePairName);
+        assertEquals("currency", pair.baseAssetClass);
+        assertEquals("XETC", pair.baseAssetId);
+        assertEquals("currency", pair.quoteAssetClass);
+        assertEquals("XXBT", pair.quoteAssetId);
+        assertEquals("unit", pair.lot);
 
-        assertEquals(8, pair.getPairDecimals().intValue());
-        assertEquals(8, pair.getLotDecimals().intValue());
-        assertEquals(1, pair.getLotMultiplier().intValue());
+        assertEquals(8, pair.pairDecimals.intValue());
+        assertEquals(8, pair.lotDecimals.intValue());
+        assertEquals(1, pair.lotMultiplier.intValue());
 
-        assertThat(pair.getLeverageBuy(), contains(2, 3));
-        assertThat(pair.getLeverageSell(), contains(2, 3));
+        assertThat(pair.leverageBuy, contains(2, 3));
+        assertThat(pair.leverageSell, contains(2, 3));
 
-        assertThat(pair.getFees(), contains(
+        assertThat(pair.fees, contains(
                 new AssetPairsResult.AssetPair.Fee(0, 0.26f),
                 new AssetPairsResult.AssetPair.Fee(50000, 0.24f),
                 new AssetPairsResult.AssetPair.Fee(100000, 0.22f),
@@ -156,7 +156,7 @@ public class HttpApiClientTest {
                 new AssetPairsResult.AssetPair.Fee(10000000, 0.1f)
         ));
 
-        assertThat(pair.getFeesMaker(), contains(
+        assertThat(pair.feesMaker, contains(
                 new AssetPairsResult.AssetPair.Fee(0, 0.16f),
                 new AssetPairsResult.AssetPair.Fee(50000, 0.14f),
                 new AssetPairsResult.AssetPair.Fee(100000, 0.12f),
@@ -168,8 +168,8 @@ public class HttpApiClientTest {
                 new AssetPairsResult.AssetPair.Fee(10000000, 0f)
         ));
 
-        assertEquals(80, pair.getMarginCall().intValue());
-        assertEquals(40, pair.getMarginStop().intValue());
+        assertEquals(80, pair.marginCall.intValue());
+        assertEquals(40, pair.marginStop.intValue());
 
         verify(mockHttpJsonClient).executePublicQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.ASSET_PAIRS.getUrl(0)));
     }

@@ -14,67 +14,31 @@ import java.math.BigDecimal;
 public class TradeBalanceResult extends Result<TradeBalanceResult> {
 
     @JsonProperty("eb")
-    private BigDecimal equivalentBalance;
+    public BigDecimal equivalentBalance;
 
     @JsonProperty("tb")
-    private BigDecimal tradeBalance;
+    public BigDecimal tradeBalance;
 
     @JsonProperty("m")
-    private BigDecimal marginAmount;
+    public BigDecimal marginAmount;
 
     @JsonProperty("n")
-    private BigDecimal unrealizedNetProfitLoss;
+    public BigDecimal unrealizedNetProfitLoss;
 
     @JsonProperty("c")
-    private BigDecimal costBasis;
+    public BigDecimal costBasis;
 
     @JsonProperty("v")
-    private BigDecimal floatingValuation;
+    public BigDecimal floatingValuation;
 
     @JsonProperty("e")
-    private BigDecimal equity;
+    public BigDecimal equity;
 
     @JsonProperty("mf")
-    private BigDecimal freeMargin;
+    public BigDecimal freeMargin;
 
     @JsonProperty("ml")
-    private BigDecimal marginLevel;
-
-    public BigDecimal getEquivalentBalance() {
-        return equivalentBalance;
-    }
-
-    public BigDecimal getTradeBalance() {
-        return tradeBalance;
-    }
-
-    public BigDecimal getMarginAmount() {
-        return marginAmount;
-    }
-
-    public BigDecimal getUnrealizedNetProfitLoss() {
-        return unrealizedNetProfitLoss;
-    }
-
-    public BigDecimal getCostBasis() {
-        return costBasis;
-    }
-
-    public BigDecimal getFloatingValuation() {
-        return floatingValuation;
-    }
-
-    public BigDecimal getEquity() {
-        return equity;
-    }
-
-    public BigDecimal getFreeMargin() {
-        return freeMargin;
-    }
-
-    public BigDecimal getMarginLevel() {
-        return marginLevel;
-    }
+    public BigDecimal marginLevel;
 
     @Override
     public String toString() {
