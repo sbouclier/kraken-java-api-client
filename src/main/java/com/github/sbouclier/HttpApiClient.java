@@ -31,12 +31,16 @@ public class HttpApiClient<T extends Result> {
         this.client = client;
     }
 
+    /**
+     * Call public kraken method
+     *
+     * @param baseUrl kraken base url
+     * @param method  kraken method
+     * @param result  result class
+     * @return result
+     * @throws KrakenApiException
+     */
     public T callPublic(String baseUrl, KrakenApiMethod method, Class<T> result) throws KrakenApiException {
-
-        System.out.println("client:"+this.client);
-        System.out.println("baseUrl:"+baseUrl);
-        System.out.println("method:"+method);
-
         try {
             final String responseString = this.client.executePublicQuery(baseUrl, method.getUrl(apiVersion));
             T res = new ObjectMapper().readValue(responseString, result);
@@ -51,6 +55,16 @@ public class HttpApiClient<T extends Result> {
         }
     }
 
+    /**
+     * Call public kraken method
+     *
+     * @param baseUrl kraken base url
+     * @param method  kraken method
+     * @param result  result class
+     * @param params  method parameters
+     * @return result
+     * @throws KrakenApiException
+     */
     public T callPublic(String baseUrl, KrakenApiMethod method, Class<T> result, Map<String, String> params) throws KrakenApiException {
         try {
             final String responseString = this.client.executePublicQuery(baseUrl, method.getUrl(apiVersion), params);
@@ -67,13 +81,13 @@ public class HttpApiClient<T extends Result> {
     }
 
     /**
-     * Execute http get query, extract last id and unmarshall result
+     * Call public kraken method and extract last id
      *
-     * @param baseUrl
-     * @param method
-     * @param result
-     * @param params
-     * @return
+     * @param baseUrl kraken base url
+     * @param method  kraken method
+     * @param result  result class
+     * @param params  method parameters
+     * @return result
      * @throws KrakenApiException
      */
     public T callPublicWithLastId(String baseUrl, KrakenApiMethod method, Class<T> result, Map<String, String> params) throws KrakenApiException {
@@ -95,6 +109,15 @@ public class HttpApiClient<T extends Result> {
         }
     }
 
+    /**
+     * Call private kraken method
+     *
+     * @param baseUrl kraken base url
+     * @param method  kraken method
+     * @param result  result class
+     * @return result
+     * @throws KrakenApiException
+     */
     public T callPrivate(String baseUrl, KrakenApiMethod method, Class<T> result) throws KrakenApiException {
         try {
             final String responseString = this.client.executePrivateQuery(baseUrl, method.getUrl(apiVersion));
@@ -110,6 +133,16 @@ public class HttpApiClient<T extends Result> {
         }
     }
 
+    /**
+     * Call private kraken method
+     *
+     * @param baseUrl kraken base url
+     * @param method  kraken method
+     * @param result  result class
+     * @param params  method parameters
+     * @return result
+     * @throws KrakenApiException
+     */
     public T callPrivate(String baseUrl, KrakenApiMethod method, Class<T> result, Map<String, String> params) throws KrakenApiException {
         try {
             final String responseString = this.client.executePrivateQuery(baseUrl, method.getUrl(apiVersion), params);
