@@ -13,6 +13,13 @@ import java.nio.charset.StandardCharsets;
 public class StreamUtils {
 
     /**
+     * Private constructor
+     */
+    private StreamUtils() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Load a resource as string
      *
      * @param clazz

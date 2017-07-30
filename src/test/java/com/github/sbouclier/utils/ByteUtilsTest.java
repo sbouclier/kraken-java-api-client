@@ -1,24 +1,25 @@
 package com.github.sbouclier.utils;
 
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Base64 utility test
+ * Byte utility test
  *
  * @author Stéphane Bouclier
  */
-public class Base64UtilsTest {
+public class ByteUtilsTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void utilityClassTest() throws Throwable {
-        final Constructor<Base64Utils> constructor = Base64Utils.class.getDeclaredConstructor();
+        final Constructor<ByteUtils> constructor = ByteUtils.class.getDeclaredConstructor();
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
 
         constructor.setAccessible(true);
@@ -31,12 +32,16 @@ public class Base64UtilsTest {
     }
 
     @Test
-    public void should_encode_and_decode_data() {
-        String originalInput = "my data 123 to encode";
+    public void should_convert_string_and_bytes() {
+        final String data = "my data to encode and decode";
+        Assert.assertEquals(data, ByteUtils.bytesToString(ByteUtils.stringToBytes(data)));
+    }
 
-        String encode = Base64Utils.base64Encode(originalInput.getBytes());
-        byte[] decode = Base64Utils.base64Decode(encode);
+    @Test
+    public void should_concatenate_bytes_arrays() throws IOException {
+        byte[] array1 = {1, 2, 3};
+        byte[] array2 = {4, 5, 6};
 
-        assertEquals(originalInput, new String(decode));
+        Assert.assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6}, ByteUtils.concatArrays(array1, array2));
     }
 }

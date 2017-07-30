@@ -129,6 +129,8 @@ public class HttpJsonClient {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return hmacDigest;
     }
