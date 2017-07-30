@@ -341,9 +341,6 @@ public class KrakenAPIClient {
                 "",
                 "");
 
-        //AssetInformationResult resultAssertInfo = client.getAssetInformation();
-        //System.out.println("resultAssertInfo:"+resultAssertInfo.getResult());
-
         //AssetPairsResult assetPairsResult = client.getAssetPairs();
         //System.out.println(assetPairsResult);
 

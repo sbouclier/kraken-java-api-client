@@ -2,6 +2,7 @@ package com.github.sbouclier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sbouclier.result.AssetInformationResult;
+import com.github.sbouclier.result.AssetPairsResult;
 import com.github.sbouclier.result.ServerTimeResult;
 import com.github.sbouclier.utils.StreamUtils;
 import org.junit.After;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -107,5 +109,69 @@ public class KrakenAPIClientTest {
 
         verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION);
         verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class);
+    }
+
+    @Test
+    public void should_return_asset_pairs() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/asset_pairs.mock.json");
+        AssetPairsResult mockResult = new ObjectMapper().readValue(jsonResult, AssetPairsResult.class);
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.ASSET_PAIRS)).thenReturn(mockClient);
+        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        AssetPairsResult result = client.getAssetPairs();
+
+        // Then
+        AssetPairsResult.AssetPair pair = result.getResult().get("XETCXXBT");
+
+        assertEquals(64, result.getResult().size());
+
+        assertEquals("ETCXBT", pair.alternatePairName);
+        assertEquals("currency", pair.baseAssetClass);
+        assertEquals("XETC", pair.baseAssetId);
+        assertEquals("currency", pair.quoteAssetClass);
+        assertEquals("XXBT", pair.quoteAssetId);
+        assertEquals("unit", pair.lot);
+
+        assertEquals(8, pair.pairDecimals.intValue());
+        assertEquals(8, pair.lotDecimals.intValue());
+        assertEquals(1, pair.lotMultiplier.intValue());
+
+        assertThat(pair.leverageBuy, contains(2, 3));
+        assertThat(pair.leverageSell, contains(2, 3));
+
+        assertThat(pair.fees, contains(
+                new AssetPairsResult.AssetPair.Fee(0, 0.26f),
+                new AssetPairsResult.AssetPair.Fee(50000, 0.24f),
+                new AssetPairsResult.AssetPair.Fee(100000, 0.22f),
+                new AssetPairsResult.AssetPair.Fee(250000, 0.2f),
+                new AssetPairsResult.AssetPair.Fee(500000, 0.18f),
+                new AssetPairsResult.AssetPair.Fee(1000000, 0.16f),
+                new AssetPairsResult.AssetPair.Fee(2500000, 0.14f),
+                new AssetPairsResult.AssetPair.Fee(5000000, 0.12f),
+                new AssetPairsResult.AssetPair.Fee(10000000, 0.1f)
+        ));
+
+        assertThat(pair.feesMaker, contains(
+                new AssetPairsResult.AssetPair.Fee(0, 0.16f),
+                new AssetPairsResult.AssetPair.Fee(50000, 0.14f),
+                new AssetPairsResult.AssetPair.Fee(100000, 0.12f),
+                new AssetPairsResult.AssetPair.Fee(250000, 0.1f),
+                new AssetPairsResult.AssetPair.Fee(500000, 0.08f),
+                new AssetPairsResult.AssetPair.Fee(1000000, 0.06f),
+                new AssetPairsResult.AssetPair.Fee(2500000, 0.04f),
+                new AssetPairsResult.AssetPair.Fee(5000000, 0.02f),
+                new AssetPairsResult.AssetPair.Fee(10000000, 0f)
+        ));
+
+        assertEquals(80, pair.marginCall.intValue());
+        assertEquals(40, pair.marginStop.intValue());
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ASSET_PAIRS);
+        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class);
     }
 }
