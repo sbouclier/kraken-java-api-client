@@ -1,6 +1,9 @@
 package com.github.sbouclier;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.sbouclier.result.AssetInformationResult;
 import com.github.sbouclier.result.ServerTimeResult;
+import com.github.sbouclier.utils.StreamUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +11,9 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
@@ -33,28 +38,74 @@ public class KrakenAPIClientTest {
     }
 
     @Test
-    public void should_return_server_time() throws KrakenApiException {
+    public void should_return_server_time() throws KrakenApiException, IOException {
 
         // Given
-        ServerTimeResult mockResult = new ServerTimeResult();
-        ServerTimeResult.ServerTime serverTime = new ServerTimeResult.ServerTime();
-        serverTime.unixtime = 1L;
-        serverTime.rfc1123 = "rfc1123";
-        mockResult.setResult(serverTime);
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/server_time.mock.json");
+        ServerTimeResult mockResult = new ObjectMapper().readValue(jsonResult, ServerTimeResult.class);
 
         // When
         when(mockClientFactory.getHttpApiClient(KrakenApiMethod.SERVER_TIME)).thenReturn(mockClient);
         when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.SERVER_TIME, ServerTimeResult.class)).thenReturn(mockResult);
 
         KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
-        ServerTimeResult serverTimeResult = client.getServerTime();
-        ServerTimeResult.ServerTime result = serverTimeResult.getResult();
+        ServerTimeResult result = client.getServerTime();
+        ServerTimeResult.ServerTime serverTime = result.getResult();
 
         // Then
-        assertThat(result.unixtime, equalTo(1L));
-        assertThat(result.rfc1123, equalTo("rfc1123"));
+        assertThat(serverTime.unixtime, equalTo(1501271914L));
+        assertThat(serverTime.rfc1123, equalTo("Fri, 28 Jul 17 19:58:34 +0000"));
 
         verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.SERVER_TIME);
         verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.SERVER_TIME, ServerTimeResult.class);
+    }
+
+    @Test
+    public void should_return_asset_information() throws KrakenApiException, IOException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/asset_information.mock.json");
+        AssetInformationResult mockResult = new ObjectMapper().readValue(jsonResult, AssetInformationResult.class);
+
+        AssetInformationResult.AssetInformation xetc = new AssetInformationResult.AssetInformation();
+        xetc.setAlternateName("ETC");
+        xetc.setAssetClass("currency");
+        xetc.setDecimals((byte) 10);
+        xetc.setDisplayDecimals((byte) 5);
+
+        AssetInformationResult.AssetInformation xeth = new AssetInformationResult.AssetInformation();
+        xeth.setAlternateName("ETH");
+        xeth.setAssetClass("currency");
+        xeth.setDecimals((byte) 10);
+        xeth.setDisplayDecimals((byte) 5);
+
+        AssetInformationResult.AssetInformation zeur = new AssetInformationResult.AssetInformation();
+        zeur.setAlternateName("EUR");
+        zeur.setAssetClass("currency");
+        zeur.setDecimals((byte) 4);
+        zeur.setDisplayDecimals((byte) 2);
+
+        AssetInformationResult.AssetInformation zusd = new AssetInformationResult.AssetInformation();
+        zusd.setAlternateName("USD");
+        zusd.setAssetClass("currency");
+        zusd.setDecimals((byte) 4);
+        zusd.setDisplayDecimals((byte) 2);
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION)).thenReturn(mockClient);
+        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        AssetInformationResult result = client.getAssetInformation();
+
+        // Then
+        assertEquals(26, result.getResult().size());
+        assertThat(result.getResult().get("XETC"), samePropertyValuesAs(xetc));
+        assertThat(result.getResult().get("XETH"), samePropertyValuesAs(xeth));
+        assertThat(result.getResult().get("ZEUR"), samePropertyValuesAs(zeur));
+        assertThat(result.getResult().get("ZUSD"), samePropertyValuesAs(zusd));
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION);
+        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class);
     }
 }

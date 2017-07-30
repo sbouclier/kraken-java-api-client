@@ -341,9 +341,6 @@ public class KrakenAPIClient {
                 "",
                 "");
 
-        //ServerTimeResult serverTimeResult = client.getServerTime();
-        //System.out.println(serverTimeResult);
-
         //AssetInformationResult resultAssertInfo = client.getAssetInformation();
         //System.out.println("resultAssertInfo:"+resultAssertInfo.getResult());
 
