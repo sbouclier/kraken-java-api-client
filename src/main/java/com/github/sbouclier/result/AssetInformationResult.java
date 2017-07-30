@@ -16,47 +16,15 @@ public class AssetInformationResult extends Result<Map<String, AssetInformationR
     public static class AssetInformation {
 
         @JsonProperty("altname")
-        private String alternateName;
+        public String alternateName;
 
         @JsonProperty("aclass")
-        private String assetClass;
+        public String assetClass;
 
-        private Byte decimals;
+        public Byte decimals;
 
         @JsonProperty("display_decimals")
-        private Byte displayDecimals;
-
-        public String getAlternateName() {
-            return alternateName;
-        }
-
-        public void setAlternateName(String alternateName) {
-            this.alternateName = alternateName;
-        }
-
-        public String getAssetClass() {
-            return assetClass;
-        }
-
-        public void setAssetClass(String assetClass) {
-            this.assetClass = assetClass;
-        }
-
-        public Byte getDecimals() {
-            return decimals;
-        }
-
-        public void setDecimals(Byte decimals) {
-            this.decimals = decimals;
-        }
-
-        public Byte getDisplayDecimals() {
-            return displayDecimals;
-        }
-
-        public void setDisplayDecimals(Byte displayDecimals) {
-            this.displayDecimals = displayDecimals;
-        }
+        public Byte displayDecimals;
 
         @Override
         public String toString() {

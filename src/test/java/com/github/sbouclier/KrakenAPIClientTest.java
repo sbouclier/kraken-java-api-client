@@ -68,28 +68,28 @@ public class KrakenAPIClientTest {
         AssetInformationResult mockResult = new ObjectMapper().readValue(jsonResult, AssetInformationResult.class);
 
         AssetInformationResult.AssetInformation xetc = new AssetInformationResult.AssetInformation();
-        xetc.setAlternateName("ETC");
-        xetc.setAssetClass("currency");
-        xetc.setDecimals((byte) 10);
-        xetc.setDisplayDecimals((byte) 5);
+        xetc.alternateName = "ETC";
+        xetc.assetClass = "currency";
+        xetc.decimals = (byte) 10;
+        xetc.displayDecimals = (byte) 5;
 
         AssetInformationResult.AssetInformation xeth = new AssetInformationResult.AssetInformation();
-        xeth.setAlternateName("ETH");
-        xeth.setAssetClass("currency");
-        xeth.setDecimals((byte) 10);
-        xeth.setDisplayDecimals((byte) 5);
+        xeth.alternateName = "ETH";
+        xeth.assetClass = "currency";
+        xeth.decimals = (byte) 10;
+        xeth.displayDecimals = (byte) 5;
 
         AssetInformationResult.AssetInformation zeur = new AssetInformationResult.AssetInformation();
-        zeur.setAlternateName("EUR");
-        zeur.setAssetClass("currency");
-        zeur.setDecimals((byte) 4);
-        zeur.setDisplayDecimals((byte) 2);
+        zeur.alternateName = "EUR";
+        zeur.assetClass = "currency";
+        zeur.decimals = (byte) 4;
+        zeur.displayDecimals = (byte) 2;
 
         AssetInformationResult.AssetInformation zusd = new AssetInformationResult.AssetInformation();
-        zusd.setAlternateName("USD");
-        zusd.setAssetClass("currency");
-        zusd.setDecimals((byte) 4);
-        zusd.setDisplayDecimals((byte) 2);
+        zusd.alternateName = "USD";
+        zusd.assetClass = "currency";
+        zusd.decimals = (byte) 4;
+        zusd.displayDecimals = (byte) 2;
 
         // When
         when(mockClientFactory.getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION)).thenReturn(mockClient);

@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,28 +69,28 @@ public class HttpApiClientTest {
         HttpApiClient<AssetInformationResult> client = new HttpApiClient<>(mockHttpJsonClient);
 
         AssetInformationResult.AssetInformation xetc = new AssetInformationResult.AssetInformation();
-        xetc.setAlternateName("ETC");
-        xetc.setAssetClass("currency");
-        xetc.setDecimals((byte) 10);
-        xetc.setDisplayDecimals((byte) 5);
+        xetc.alternateName = "ETC";
+        xetc.assetClass = "currency";
+        xetc.decimals = (byte) 10;
+        xetc.displayDecimals = (byte) 5;
 
         AssetInformationResult.AssetInformation xeth = new AssetInformationResult.AssetInformation();
-        xeth.setAlternateName("ETH");
-        xeth.setAssetClass("currency");
-        xeth.setDecimals((byte) 10);
-        xeth.setDisplayDecimals((byte) 5);
+        xeth.alternateName = "ETH";
+        xeth.assetClass = "currency";
+        xeth.decimals = (byte) 10;
+        xeth.displayDecimals = (byte) 5;
 
         AssetInformationResult.AssetInformation zeur = new AssetInformationResult.AssetInformation();
-        zeur.setAlternateName("EUR");
-        zeur.setAssetClass("currency");
-        zeur.setDecimals((byte) 4);
-        zeur.setDisplayDecimals((byte) 2);
+        zeur.alternateName = "EUR";
+        zeur.assetClass = "currency";
+        zeur.decimals = (byte) 4;
+        zeur.displayDecimals = (byte) 2;
 
         AssetInformationResult.AssetInformation zusd = new AssetInformationResult.AssetInformation();
-        zusd.setAlternateName("USD");
-        zusd.setAssetClass("currency");
-        zusd.setDecimals((byte) 4);
-        zusd.setDisplayDecimals((byte) 2);
+        zusd.alternateName = "USD";
+        zusd.assetClass = "currency";
+        zusd.decimals = (byte) 4;
+        zusd.displayDecimals = (byte) 2;
 
         // When
         when(mockHttpJsonClient.executePublicQuery(
