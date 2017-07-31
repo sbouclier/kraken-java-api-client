@@ -1,10 +1,7 @@
 package com.github.sbouclier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.sbouclier.result.AssetInformationResult;
-import com.github.sbouclier.result.AssetPairsResult;
-import com.github.sbouclier.result.ServerTimeResult;
-import com.github.sbouclier.result.TickerInformationResult;
+import com.github.sbouclier.result.*;
 import com.github.sbouclier.utils.StreamUtils;
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -205,5 +202,58 @@ public class KrakenAPIClientTest {
 
         verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.TICKER_INFORMATION);
         verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.TICKER_INFORMATION, TickerInformationResult.class, params);
+    }
+
+    @Test
+    public void should_return_ohlc() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/ohlc.mock.json");
+        OHLCResult mockResult = new ObjectMapper().readValue(jsonResult, OHLCResult.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
+        params.put("interval", "1440");
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.OHLC)).thenReturn(mockClient);
+        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        OHLCResult result = client.getOHLC("BTCEUR", KrakenAPIClient.Interval.ONE_DAY);
+
+        // Then
+        assertEquals(720, result.getOHLCData().size());
+        assertEquals(result.getLast().intValue(), 1501200000);
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.OHLC);
+        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
+    }
+
+    @Test
+    public void should_return_ohlc_since_id() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/ohlc.mock.json");
+        OHLCResult mockResult = new ObjectMapper().readValue(jsonResult, OHLCResult.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
+        params.put("interval", "1440");
+        params.put("since", "123456");
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.OHLC)).thenReturn(mockClient);
+        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        OHLCResult result = client.getOHLC("BTCEUR", KrakenAPIClient.Interval.ONE_DAY, 123456);
+
+        // Then
+        assertEquals(720, result.getOHLCData().size());
+        assertEquals(result.getLast().intValue(), 1501200000);
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.OHLC);
+        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
     }
 }

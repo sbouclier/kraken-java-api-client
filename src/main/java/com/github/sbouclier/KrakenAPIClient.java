@@ -143,7 +143,7 @@ public class KrakenAPIClient {
      *
      * @param pair     currency pair
      * @param interval interval of time
-     * @param since    data since givene id
+     * @param since    data since given id
      * @return data (OHLC + last id)
      * @throws KrakenApiException
      */
@@ -340,12 +340,6 @@ public class KrakenAPIClient {
         KrakenAPIClient client = new KrakenAPIClient(
                 "",
                 "");
-
-        //AssetPairsResult assetPairsResult = client.getAssetPairs();
-        //System.out.println(assetPairsResult);
-
-        //TickerInformationResult tickerInformationResult = client.getTickerInformation(Arrays.asList("BTCEUR", "ETHEUR"));
-        //System.out.println(tickerInformationResult);
 
         //OHLCResult resultOHLC = client.getOHLC("XXBTZEUR", Interval.ONE_DAY);
         //System.out.println("resultOHLC:"+resultOHLC);
