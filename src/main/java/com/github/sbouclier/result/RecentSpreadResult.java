@@ -19,9 +19,9 @@ public class RecentSpreadResult extends ResultWithLastId<Map<String, List<Recent
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder({"time", "bid", "ask"})
     public static class Spread {
-        public Object time;
-        public Object bid;
-        public Object ask;
+        public Integer time;
+        public BigDecimal bid;
+        public BigDecimal ask;
 
         private Spread() {}
 

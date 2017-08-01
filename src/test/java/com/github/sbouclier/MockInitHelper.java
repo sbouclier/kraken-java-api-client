@@ -1,5 +1,6 @@
 package com.github.sbouclier;
 
+import com.github.sbouclier.result.RecentSpreadResult;
 import com.github.sbouclier.result.RecentTradeResult;
 
 import java.math.BigDecimal;
@@ -34,6 +35,24 @@ public class MockInitHelper {
         trades.add(trade2);
 
         map.put("XXBTZEUR", trades);
+        mockResult.setResult(map);
+        mockResult.setLastId(123456L);
+
+        return mockResult;
+    }
+
+    public static RecentSpreadResult buildRecentSpreadResult() {
+        RecentSpreadResult mockResult = new RecentSpreadResult();
+        Map<String, List<RecentSpreadResult.Spread>> map = new HashMap<>();
+
+        List<RecentSpreadResult.Spread> spreads = new ArrayList<>();
+        RecentSpreadResult.Spread spread1 = new RecentSpreadResult.Spread(1, BigDecimal.valueOf(10), BigDecimal.valueOf(11));
+        RecentSpreadResult.Spread spread2 = new RecentSpreadResult.Spread(2, BigDecimal.valueOf(20), BigDecimal.valueOf(21));
+
+        spreads.add(spread1);
+        spreads.add(spread2);
+
+        map.put("XXBTZEUR", spreads);
         mockResult.setResult(map);
         mockResult.setLastId(123456L);
 

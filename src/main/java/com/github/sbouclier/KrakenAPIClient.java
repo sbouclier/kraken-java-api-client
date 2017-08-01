@@ -341,14 +341,9 @@ public class KrakenAPIClient {
                 "",
                 "");
 
-
-        RecentTradeResult result = client.getRecentTrades("BTCEUR");
-        System.out.println(result);
-        System.out.println("last id: "+result.getLastId());
-
-        //RecentSpreadResult recentSpreadResult = client.getRecentSpreads("BTCEUR");
-        //System.out.println(recentSpreadResult.getResult());
-        //System.out.println("last id: " + recentSpreadResult.getLastId());
+        RecentSpreadResult recentSpreadResult = client.getRecentSpreads("BTCEUR");
+        System.out.println(recentSpreadResult);
+        System.out.println("last id: " + recentSpreadResult.getLastId());
 
         //AccountBalanceResult accountBalanceResult = client.getAccountBalance();
         //accountBalanceResult.getResult().forEach((currency, balance) -> System.out.println(currency + " = " + balance));
