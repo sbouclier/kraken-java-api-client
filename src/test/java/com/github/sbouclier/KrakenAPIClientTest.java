@@ -7,13 +7,10 @@ import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.internal.matchers.Or;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -290,5 +287,64 @@ public class KrakenAPIClientTest {
 
         verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ORDER_BOOK);
         verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDER_BOOK, OrderBookResult.class, params);
+    }
+
+    @Test
+    public void should_return_recent_trades() throws IOException, KrakenApiException {
+
+        // Given
+        RecentTradeResult mockResult = MockInitHelper.buildRecentTradeResult();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.RECENT_TRADES)).thenReturn(mockClient);
+        when(mockClient.callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.RECENT_TRADES, RecentTradeResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        RecentTradeResult result = client.getRecentTrades("BTCEUR");
+
+        // Then
+        List<RecentTradeResult.RecentTrade> resultTrades = result.getResult().get("XXBTZEUR");
+        assertEquals(2, resultTrades.size());
+        assertThat(resultTrades.get(0).price, Matchers.comparesEqualTo(BigDecimal.TEN));
+        assertThat(resultTrades.get(0).volume, Matchers.comparesEqualTo(BigDecimal.ONE));
+        assertThat(resultTrades.get(1).price, Matchers.comparesEqualTo(BigDecimal.valueOf(20)));
+        assertThat(resultTrades.get(1).volume, Matchers.comparesEqualTo(BigDecimal.valueOf(2)));
+        assertEquals(123456L, result.getLastId().longValue());
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.RECENT_TRADES);
+        verify(mockClient).callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.RECENT_TRADES, RecentTradeResult.class, params);
+    }
+
+    @Test
+    public void should_return_recent_trades_since_id() throws IOException, KrakenApiException {
+
+        // Given
+        RecentTradeResult mockResult = MockInitHelper.buildRecentTradeResult();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
+        params.put("since", "123456");
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.RECENT_TRADES)).thenReturn(mockClient);
+        when(mockClient.callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.RECENT_TRADES, RecentTradeResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        RecentTradeResult result = client.getRecentTrades("BTCEUR", 123456);
+
+        // Then
+        List<RecentTradeResult.RecentTrade> resultTrades = result.getResult().get("XXBTZEUR");
+        assertEquals(2, resultTrades.size());
+        assertThat(resultTrades.get(0).price, Matchers.comparesEqualTo(BigDecimal.TEN));
+        assertThat(resultTrades.get(0).volume, Matchers.comparesEqualTo(BigDecimal.ONE));
+        assertThat(resultTrades.get(1).price, Matchers.comparesEqualTo(BigDecimal.valueOf(20)));
+        assertThat(resultTrades.get(1).volume, Matchers.comparesEqualTo(BigDecimal.valueOf(2)));
+        assertEquals(123456L, result.getLastId().longValue());
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.RECENT_TRADES);
+        verify(mockClient).callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.RECENT_TRADES, RecentTradeResult.class, params);
     }
 }

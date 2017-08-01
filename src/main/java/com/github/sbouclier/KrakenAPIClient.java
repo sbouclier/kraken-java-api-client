@@ -341,15 +341,10 @@ public class KrakenAPIClient {
                 "",
                 "");
 
-        //OHLCResult resultOHLC = client.getOHLC("XXBTZEUR", Interval.ONE_DAY);
-        //System.out.println("resultOHLC:"+resultOHLC);
 
-        //OrderBookResult orderBookResult = client.getOrderBook("BTCEUR");
-        //System.out.println(orderBookResult);
-
-        //RecentTradeResult result = client.getRecentTrades("BTCEUR");
-        //System.out.println(result.getResult());
-        //System.out.println("last id: "+result.getLastId());
+        RecentTradeResult result = client.getRecentTrades("BTCEUR");
+        System.out.println(result);
+        System.out.println("last id: "+result.getLastId());
 
         //RecentSpreadResult recentSpreadResult = client.getRecentSpreads("BTCEUR");
         //System.out.println(recentSpreadResult.getResult());
