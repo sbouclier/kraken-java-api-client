@@ -408,4 +408,28 @@ public class KrakenAPIClientTest {
         verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.RECENT_SPREADS);
         verify(mockClient).callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.RECENT_SPREADS, RecentSpreadResult.class, params);
     }
+
+    @Test
+    public void should_return_account_balance() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/account_balance.mock.json");
+        AccountBalanceResult mockResult = new ObjectMapper().readValue(jsonResult, AccountBalanceResult.class);
+
+        // When
+        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.ACCOUNT_BALANCE)).thenReturn(mockClient);
+        when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ACCOUNT_BALANCE, AccountBalanceResult.class)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        AccountBalanceResult result = client.getAccountBalance();
+
+        // Then
+        assertThat(result.getResult().get("ZEUR"), Matchers.comparesEqualTo(BigDecimal.valueOf(86.1602)));
+        assertThat(result.getResult().get("XXBT"), Matchers.comparesEqualTo(BigDecimal.valueOf(0.0472043520)));
+        assertThat(result.getResult().get("XXRP"), Matchers.comparesEqualTo(BigDecimal.valueOf(100)));
+        assertThat(result.getResult().get("BCH"), Matchers.comparesEqualTo(BigDecimal.valueOf(0.0472043520)));
+
+        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.ACCOUNT_BALANCE);
+        verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ACCOUNT_BALANCE, AccountBalanceResult.class);
+    }
 }
