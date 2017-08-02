@@ -11,6 +11,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -499,5 +500,29 @@ public class KrakenAPIClientTest {
 
         verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.CLOSED_ORDERS);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.CLOSED_ORDERS, ClosedOrdersResult.class);
+    }
+
+    @Test
+    public void should_return_orders_information() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/orders_information.mock.json");
+        OrdersInformationResult mockResult = new ObjectMapper().readValue(jsonResult, OrdersInformationResult.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("txid", "OGRQC4-Q5C5N-2EYZDZ");
+
+        // When
+        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.ORDERS_INFORMATION)).thenReturn(mockClient);
+        when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        OrdersInformationResult result = client.getOrdersInformation(Arrays.asList("OGRQC4-Q5C5N-2EYZDZ"));
+
+        assertThat(result.getResult().size(), equalTo(1));
+        assertThat(result.getResult().get("OGRQC4-Q5C5N-2EYZDZ").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2100)));
+
+        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.ORDERS_INFORMATION);
+        verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
     }
 }

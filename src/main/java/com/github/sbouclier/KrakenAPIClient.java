@@ -339,11 +339,12 @@ public class KrakenAPIClient {
      * @throws KrakenApiException
      */
     public OrdersInformationResult getOrdersInformation(List<String> transactions) throws KrakenApiException {
+        HttpApiClient<OrdersInformationResult> client = (HttpApiClient<OrdersInformationResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.ORDERS_INFORMATION);
+
         Map<String, String> params = new HashMap<>();
         params.put("txid", transactions.stream().collect(Collectors.joining(",")));
 
-        return new HttpApiClient<OrdersInformationResult>(this.apiKey, this.apiSecret)
-                .callPrivate(BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
+        return client.callPrivate(BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
     }
 
     public static void main(String[] args) throws KrakenApiException {
@@ -351,14 +352,8 @@ public class KrakenAPIClient {
                 "",
                 "");
 
-        OpenOrdersResult openOrders = client.getOpenOrders();
-        System.out.println(openOrders.getResult());
-
-        ClosedOrdersResult closedOrders = client.getClosedOrders();
-        System.out.println(closedOrders.getResult());
-
-        OrdersInformationResult ordersInformationResult = client.getOrdersInformation(Arrays.asList("OGRQC4-Q5C5N-2EYZDP"));
-        System.out.println(ordersInformationResult.getResult());
-        ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
+        //OrdersInformationResult ordersInformationResult = client.getOrdersInformation(Arrays.asList("OGRQC4-Q5C5N-2EYZDP"));
+        //System.out.println(ordersInformationResult.getResult());
+        //ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
     }
 }
