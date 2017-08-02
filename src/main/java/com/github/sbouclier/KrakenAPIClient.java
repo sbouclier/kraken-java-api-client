@@ -316,7 +316,7 @@ public class KrakenAPIClient {
      * @return open orders
      * @throws KrakenApiException
      */
-    public OpenOrdersResult getOpenOrdersResult() throws KrakenApiException {
+    public OpenOrdersResult getOpenOrders() throws KrakenApiException {
         HttpApiClient<OpenOrdersResult> client = (HttpApiClient<OpenOrdersResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.OPEN_ORDERS);
         return client.callPrivate(BASE_URL, KrakenApiMethod.OPEN_ORDERS, OpenOrdersResult.class);
     }
@@ -327,7 +327,7 @@ public class KrakenAPIClient {
      * @return closed orders
      * @throws KrakenApiException
      */
-    public ClosedOrdersResult getClosedOrdersResult() throws KrakenApiException {
+    public ClosedOrdersResult getClosedOrders() throws KrakenApiException {
         return new HttpApiClient<ClosedOrdersResult>(this.apiKey, this.apiSecret)
                 .callPrivate(BASE_URL, KrakenApiMethod.CLOSED_ORDERS, ClosedOrdersResult.class);
     }
@@ -338,7 +338,7 @@ public class KrakenAPIClient {
      * @return orders information
      * @throws KrakenApiException
      */
-    public OrdersInformationResult getOrdersInformationResult(List<String> transactions) throws KrakenApiException {
+    public OrdersInformationResult getOrdersInformation(List<String> transactions) throws KrakenApiException {
         Map<String, String> params = new HashMap<>();
         params.put("txid", transactions.stream().collect(Collectors.joining(",")));
 
@@ -351,13 +351,13 @@ public class KrakenAPIClient {
                 "",
                 "");
 
-        OpenOrdersResult openOrders = client.getOpenOrdersResult();
+        OpenOrdersResult openOrders = client.getOpenOrders();
         System.out.println(openOrders.getResult());
 
-        ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
+        ClosedOrdersResult closedOrders = client.getClosedOrders();
         System.out.println(closedOrders.getResult());
 
-        OrdersInformationResult ordersInformationResult = client.getOrdersInformationResult(Arrays.asList("OGRQC4-Q5C5N-2EYZDP"));
+        OrdersInformationResult ordersInformationResult = client.getOrdersInformation(Arrays.asList("OGRQC4-Q5C5N-2EYZDP"));
         System.out.println(ordersInformationResult.getResult());
         ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
     }

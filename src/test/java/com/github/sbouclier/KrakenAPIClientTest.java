@@ -454,4 +454,27 @@ public class KrakenAPIClientTest {
         verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.TRADE_BALANCE);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADE_BALANCE, TradeBalanceResult.class);
     }
+
+    @Test
+    public void should_return_open_orders() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/open_orders.mock.json");
+        OpenOrdersResult mockResult = new ObjectMapper().readValue(jsonResult, OpenOrdersResult.class);
+
+        // When
+        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.OPEN_ORDERS)).thenReturn(mockClient);
+        when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_ORDERS, OpenOrdersResult.class)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        OpenOrdersResult result = client.getOpenOrders();
+
+        assertThat(result.getResult().open.size(), equalTo(3));
+        assertThat(result.getResult().open.get("OC6Z5B-NLAHB-6MQNLA").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2600)));
+        assertThat(result.getResult().open.get("ORGIM4-6TDSR-DZMIID").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2700)));
+        assertThat(result.getResult().open.get("OBP2WQ-RLHY2-OUZ5EA").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2500)));
+
+        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.OPEN_ORDERS);
+        verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_ORDERS, OpenOrdersResult.class);
+    }
 }

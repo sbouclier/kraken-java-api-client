@@ -106,21 +106,21 @@ System.out.println(result.getResult());
 ## Get open orders
 
 ```java
-OpenOrdersResult openOrders = client.getOpenOrdersResult();
+OpenOrdersResult openOrders = client.getOpenOrders();
 System.out.println(openOrders.getResult());
 ```
 
 ## Get closed orders
 
 ```java
-ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
+ClosedOrdersResult closedOrders = client.getClosedOrders();
 System.out.println(closedOrders.getResult());
 ```
 
 ## Get orders information
 
 ```java
-OrdersInformationResult ordersInformationResult = client.getOrdersInformationResult(Arrays.asList("OGRQD4-Q5C5N-2EYZDP","OC7Z5B-NLAHB-6MQNLA"));
+OrdersInformationResult ordersInformationResult = client.getOrdersInformation(Arrays.asList("OGRQD4-Q5C5N-2EYZDP","OC7Z5B-NLAHB-6MQNLA"));
 ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
 
 // print
