@@ -477,4 +477,27 @@ public class KrakenAPIClientTest {
         verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.OPEN_ORDERS);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_ORDERS, OpenOrdersResult.class);
     }
+
+    @Test
+    public void should_return_closed_orders() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/closed_orders.mock.json");
+        ClosedOrdersResult mockResult = new ObjectMapper().readValue(jsonResult, ClosedOrdersResult.class);
+
+        // When
+        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.CLOSED_ORDERS)).thenReturn(mockClient);
+        when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.CLOSED_ORDERS, ClosedOrdersResult.class)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        ClosedOrdersResult result = client.getClosedOrders();
+
+        assertThat(result.getResult().closed.size(), equalTo(49));
+        assertThat(result.getResult().closed.get("OGRQC4-Q5C5N-2EYZDP").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2100)));
+        assertThat(result.getResult().closed.get("ORDWRN-QH4LD-Y2KG3W").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2090)));
+        assertThat(result.getResult().closed.get("OJUIIP-3AR2S-GTW2VU").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(1810)));
+
+        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.CLOSED_ORDERS);
+        verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.CLOSED_ORDERS, ClosedOrdersResult.class);
+    }
 }

@@ -328,8 +328,8 @@ public class KrakenAPIClient {
      * @throws KrakenApiException
      */
     public ClosedOrdersResult getClosedOrders() throws KrakenApiException {
-        return new HttpApiClient<ClosedOrdersResult>(this.apiKey, this.apiSecret)
-                .callPrivate(BASE_URL, KrakenApiMethod.CLOSED_ORDERS, ClosedOrdersResult.class);
+        HttpApiClient<ClosedOrdersResult> client = (HttpApiClient<ClosedOrdersResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.CLOSED_ORDERS);
+        return client.callPrivate(BASE_URL, KrakenApiMethod.CLOSED_ORDERS, ClosedOrdersResult.class);
     }
 
     /**
