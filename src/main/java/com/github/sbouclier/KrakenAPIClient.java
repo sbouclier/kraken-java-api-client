@@ -348,24 +348,17 @@ public class KrakenAPIClient {
 
     public static void main(String[] args) throws KrakenApiException {
         KrakenAPIClient client = new KrakenAPIClient(
-                "MGj/I0zCeF2S2C/qEAm5XYRZzQMjopPvI8emoe/MR5hbLahKR2eYdz8z",
-                "ZkapqcHI3R4BrDrkC8Tu7mBJFwCAqeeUyCyLkboKfnuVBfLR5GC/s5MC9qhtMHwAAyGug+z0nGCvFkrbzaIzqg==");
+                "",
+                "");
 
-        AccountBalanceResult accountBalanceResult = client.getAccountBalance();
-        accountBalanceResult.getResult().forEach((currency, balance) -> System.out.println(currency + " = " + balance));
-        System.out.println(accountBalanceResult.getResult());
+        OpenOrdersResult openOrders = client.getOpenOrdersResult();
+        System.out.println(openOrders.getResult());
 
-        //TradeBalanceResult tradeBalanceResult = client.getTradeBalance();
-        //System.out.println(tradeBalanceResult.getResult());
+        ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
+        System.out.println(closedOrders.getResult());
 
-        //OpenOrdersResult openOrders = client.getOpenOrdersResult();
-        //System.out.println(openOrders.getResult());
-
-        //ClosedOrdersResult closedOrders = client.getClosedOrdersResult();
-        //System.out.println(closedOrders.getResult());
-
-        //OrdersInformationResult ordersInformationResult = client.getOrdersInformationResult(Arrays.asList("OGRQC4-Q5C5N-2EYZDP"));
-        //System.out.println(ordersInformationResult.getResult());
-        //ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
+        OrdersInformationResult ordersInformationResult = client.getOrdersInformationResult(Arrays.asList("OGRQC4-Q5C5N-2EYZDP"));
+        System.out.println(ordersInformationResult.getResult());
+        ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
     }
 }
