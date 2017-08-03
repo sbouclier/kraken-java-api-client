@@ -352,10 +352,6 @@ public class KrakenAPIClient {
                 "",
                 "");
 
-        RecentSpreadResult result = client.getRecentSpreads("BTCEUR");
-        System.out.println(result.getResult());
-        System.out.println("last id: "+result.getLastId());
-
         //OrdersInformationResult ordersInformationResult = client.getOrdersInformation(Arrays.asList("OGRQC4-Q5C5N-2EYZDP"));
         //System.out.println(ordersInformationResult.getResult());
         //ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));

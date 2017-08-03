@@ -23,7 +23,6 @@ public class RecentSpreadResultTest {
     @Test
     public void should_not_access_private_constructor() throws Throwable {
         final Constructor<RecentSpreadResult.Spread> constructor = RecentSpreadResult.Spread.class.getDeclaredConstructor();
-        System.out.println(constructor);
 
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
 

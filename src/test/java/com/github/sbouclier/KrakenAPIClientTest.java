@@ -263,6 +263,39 @@ public class KrakenAPIClientTest {
 
         Map<String, String> params = new HashMap<>();
         params.put("pair", "BTCEUR");
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.ORDER_BOOK)).thenReturn(mockClient);
+        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDER_BOOK, OrderBookResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        OrderBookResult result = client.getOrderBook("BTCEUR");
+
+        // Then
+        assertEquals(100, result.getResult().get("XXBTZEUR").asks.size());
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(0).price, Matchers.comparesEqualTo(BigDecimal.valueOf(2378.58700)));
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(0).volume, Matchers.comparesEqualTo(BigDecimal.valueOf(1.089)));
+        assertEquals(result.getResult().get("XXBTZEUR").asks.get(0).timestamp.intValue(), 1501320458);
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(1).price, Matchers.comparesEqualTo(BigDecimal.valueOf(2378.96900)));
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(1).volume, Matchers.comparesEqualTo(BigDecimal.valueOf(0.022)));
+        assertEquals(result.getResult().get("XXBTZEUR").asks.get(1).timestamp.intValue(), 1501320449);
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(2).price, Matchers.comparesEqualTo(BigDecimal.valueOf(2378.97100)));
+        assertThat(result.getResult().get("XXBTZEUR").asks.get(2).volume, Matchers.comparesEqualTo(BigDecimal.valueOf(0.058)));
+        assertEquals(result.getResult().get("XXBTZEUR").asks.get(2).timestamp.intValue(), 1501319911);
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ORDER_BOOK);
+        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDER_BOOK, OrderBookResult.class, params);
+    }
+
+    @Test
+    public void should_return_order_book_limited() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/order_book.mock.json");
+        OrderBookResult mockResult = new ObjectMapper().readValue(jsonResult, OrderBookResult.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
         params.put("count", "3");
 
         // When
