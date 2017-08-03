@@ -1,5 +1,6 @@
 package com.github.sbouclier;
 
+import com.github.sbouclier.result.OHLCResult;
 import com.github.sbouclier.result.RecentSpreadResult;
 import com.github.sbouclier.result.RecentTradeResult;
 
@@ -16,7 +17,8 @@ import java.util.Map;
  */
 public class MockInitHelper {
 
-    private MockInitHelper() {}
+    private MockInitHelper() {
+    }
 
     public static RecentTradeResult buildRecentTradeResult() {
         RecentTradeResult mockResult = new RecentTradeResult();
@@ -55,6 +57,32 @@ public class MockInitHelper {
         map.put("XXBTZEUR", spreads);
         mockResult.setResult(map);
         mockResult.setLastId(123456L);
+
+        return mockResult;
+    }
+
+    public static OHLCResult buildOHLCResult() {
+        OHLCResult mockResult = new OHLCResult();
+        Map<String, List<OHLCResult.OHLC>> map = new HashMap<>();
+
+        List<OHLCResult.OHLC> ohlcs = new ArrayList<>();
+
+        OHLCResult.OHLC ohlc1 = new OHLCResult.OHLC();
+        ohlc1.time = 1000;
+        ohlc1.low = BigDecimal.valueOf(2000);
+        ohlc1.high = BigDecimal.valueOf(2500);
+
+        OHLCResult.OHLC ohlc2 = new OHLCResult.OHLC();
+        ohlc2.time = 2000;
+        ohlc2.low = BigDecimal.valueOf(1800);
+        ohlc2.high = BigDecimal.valueOf(2100);
+
+        ohlcs.add(ohlc1);
+        ohlcs.add(ohlc2);
+
+        map.put("XXBTZEUR", ohlcs);
+        mockResult.setResult(map);
+        mockResult.setLastId(23456L);
 
         return mockResult;
     }

@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author Stéphane Bouclier
  */
-public class OHLCResult extends Result<Map<String, Object>> {
+public class OHLCResult extends ResultWithLastId<Map<String, List<OHLCResult.OHLC>>> {
 
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder({"time", "open", "high", "low", "close", "vwap", "volume", "count"})
@@ -43,22 +43,5 @@ public class OHLCResult extends Result<Map<String, Object>> {
                     .append("count", count)
                     .toString();
         }
-    }
-
-    public List<OHLC> getOHLCData() throws KrakenApiException {
-        Iterator it = getResult().entrySet().iterator();
-        ArrayList ohlcData = (ArrayList) ((Map.Entry) it.next()).getValue();
-
-        try {
-            return new ObjectMapper().readValue(ohlcData.toString(), new TypeReference<List<OHLC>>() {});
-        } catch (IOException ex) {
-            throw new KrakenApiException("unable to deserialize data", ex);
-        }
-    }
-
-    public Integer getLast() {
-        Iterator it = getResult().entrySet().iterator();
-        it.next();
-        return (Integer) ((Map.Entry) it.next()).getValue();
     }
 }

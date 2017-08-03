@@ -165,7 +165,7 @@ public class KrakenAPIClient {
         params.put("interval", String.valueOf(interval.minutes));
         params.put("since", String.valueOf(since));
 
-        return client.callPublic(BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
+        return client.callPublicWithLastId(BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
     }
 
     /**
@@ -183,7 +183,7 @@ public class KrakenAPIClient {
         params.put("pair", pair);
         params.put("interval", String.valueOf(interval.minutes));
 
-        return client.callPublic(BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
+        return client.callPublicWithLastId(BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
     }
 
     /**
@@ -351,6 +351,10 @@ public class KrakenAPIClient {
         KrakenAPIClient client = new KrakenAPIClient(
                 "",
                 "");
+
+        OHLCResult result = client.getOHLC("BTCEUR", Interval.ONE_MINUTE);
+        System.out.println(result.getResult().get("XXBTZEUR").size()); // OHLC data
+        //System.out.println(result.getLast()); // last id
 
         //OrdersInformationResult ordersInformationResult = client.getOrdersInformation(Arrays.asList("OGRQC4-Q5C5N-2EYZDP"));
         //System.out.println(ordersInformationResult.getResult());

@@ -1,6 +1,7 @@
 package com.github.sbouclier.result;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.sbouclier.MockInitHelper;
 import com.github.sbouclier.utils.StreamUtils;
 import org.junit.Test;
 
@@ -20,8 +21,7 @@ public class OHLCResultTest {
     public void should_return_to_string() throws IOException {
 
         // Given
-        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/ohlc.mock.json");
-        OHLCResult mockResult = new ObjectMapper().readValue(jsonResult, OHLCResult.class);
+        OHLCResult mockResult = MockInitHelper.buildOHLCResult();
 
         // When
         final String toString = mockResult.toString();

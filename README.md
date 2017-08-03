@@ -48,7 +48,7 @@ System.out.println(result.getResult());
 
 ```java
 OHLCResult result = client.getOHLC("BTCEUR", Interval.ONE_MINUTE);
-System.out.println(result.getOHLCData()); // OHLC data
+System.out.println(result.getResult()); // OHLC data
 System.out.println(result.getLast()); // last id
 ```
 

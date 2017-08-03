@@ -207,34 +207,6 @@ public class HttpApiClientTest {
     }
 
     @Test
-    public void should_unmarshal_ohlc_result() throws IOException, KrakenApiException {
-
-        // Given
-        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/ohlc.mock.json");
-        HttpApiClient<OHLCResult> client = new HttpApiClient<>(mockHttpJsonClient);
-
-        // When
-        when(mockHttpJsonClient.executePublicQuery(
-                eq(KrakenAPIClient.BASE_URL),
-                eq(KrakenApiMethod.OHLC.getUrl(0)),
-                any())
-        ).thenReturn(mockResponseBody.toString());
-
-        Map<String, String> params = new HashMap<>();
-        params.put("pair", "BTCEUR");
-        OHLCResult result = client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
-
-        // Then
-        assertEquals(720, result.getOHLCData().size());
-        assertEquals(result.getLast().intValue(), 1501200000);
-
-        verify(mockHttpJsonClient).executePublicQuery(
-                eq(KrakenAPIClient.BASE_URL),
-                eq(KrakenApiMethod.OHLC.getUrl(0)),
-                any());
-    }
-
-    @Test
     public void should_unmarshal_order_book_result() throws KrakenApiException, IOException {
 
         // Given
