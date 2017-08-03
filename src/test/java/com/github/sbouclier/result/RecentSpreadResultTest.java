@@ -1,12 +1,17 @@
 package com.github.sbouclier.result;
 
 import com.github.sbouclier.MockInitHelper;
+import com.github.sbouclier.utils.ByteUtils;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.junit.Assert.assertTrue;
 
 /**
  * RecentSpreadResult test
@@ -14,6 +19,17 @@ import static org.hamcrest.core.StringStartsWith.startsWith;
  * @author Stéphane Bouclier
  */
 public class RecentSpreadResultTest {
+
+    @Test
+    public void should_not_access_private_constructor() throws Throwable {
+        final Constructor<RecentSpreadResult.Spread> constructor = RecentSpreadResult.Spread.class.getDeclaredConstructor();
+        System.out.println(constructor);
+
+        assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+
+        constructor.setAccessible(true);
+        constructor.newInstance();
+    }
 
     @Test
     public void should_return_to_string() throws IOException {
