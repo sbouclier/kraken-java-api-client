@@ -27,8 +27,6 @@ public class HttpApiClientFactory {
                 return new HttpApiClient<RecentTradeResult>();
             case RECENT_SPREADS:
                 return new HttpApiClient<RecentSpreadResult>();
-            case ACCOUNT_BALANCE:
-                return new HttpApiClient<AccountBalanceResult>();
             default:
                 throw new IllegalArgumentException("Unknown Kraken API method");
         }
