@@ -1,6 +1,6 @@
 package com.github.sbouclier.result;
 
-import com.github.sbouclier.MockInitHelper;
+import com.github.sbouclier.mock.MockInitHelper;
 import org.junit.Test;
 
 import java.io.IOException;

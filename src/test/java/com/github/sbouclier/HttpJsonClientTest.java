@@ -1,14 +1,12 @@
 package com.github.sbouclier;
 
+import com.github.sbouclier.mock.MockHttpsURLConnection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
@@ -18,7 +16,6 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 /**
  * HttpJsonClient test
@@ -186,5 +183,63 @@ public class HttpJsonClientTest {
         String result = client.executePrivateQuery("https://baseUrl", "/urlMethod");
 
         // Then exception
+    }
+
+    @Test
+    public void should_retrieve_private_json_response() throws IOException, KrakenApiException {
+
+        // Given
+        URL url = null;
+        final MockHttpsURLConnection mockHttpURLConnection = new MockHttpsURLConnection(url);
+
+        final URLStreamHandler handler = new URLStreamHandler() {
+            @Override
+            protected URLConnection openConnection(final URL arg0)
+                    throws IOException {
+                return mockHttpURLConnection;
+            }
+        };
+
+        url = new URL("https", "baseUrl", 80, "", handler);
+
+        HttpJsonClient client = new HttpJsonClient();
+        HttpJsonClient spyClient = Mockito.spy(client);
+
+        Mockito.doReturn("response").when(spyClient).getJsonResponse(any());
+
+        // When
+        String result = spyClient.getPrivateJsonResponse(url, "postData", "signature");
+
+        // Then
+        assertThat(result, equalTo("response"));
+    }
+
+    @Test
+    public void should_retrieve_private_json_response_with_no_post_data() throws IOException, KrakenApiException {
+
+        // Given
+        URL url = null;
+        final MockHttpsURLConnection mockHttpURLConnection = new MockHttpsURLConnection(url);
+
+        final URLStreamHandler handler = new URLStreamHandler() {
+            @Override
+            protected URLConnection openConnection(final URL arg0)
+                    throws IOException {
+                return mockHttpURLConnection;
+            }
+        };
+
+        url = new URL("https", "baseUrl", 80, "", handler);
+
+        HttpJsonClient client = new HttpJsonClient();
+        HttpJsonClient spyClient = Mockito.spy(client);
+
+        Mockito.doReturn("response").when(spyClient).getJsonResponse(any());
+
+        // When
+        String result = spyClient.getPrivateJsonResponse(url, null, "signature");
+
+        // Then
+        assertThat(result, equalTo("response"));
     }
 }

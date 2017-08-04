@@ -1,8 +1,6 @@
 package com.github.sbouclier.result;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.sbouclier.MockInitHelper;
-import com.github.sbouclier.utils.StreamUtils;
+import com.github.sbouclier.mock.MockInitHelper;
 import org.junit.Test;
 
 import java.io.IOException;

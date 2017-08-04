@@ -1,12 +1,10 @@
 package com.github.sbouclier.result;
 
-import com.github.sbouclier.MockInitHelper;
-import com.github.sbouclier.utils.ByteUtils;
+import com.github.sbouclier.mock.MockInitHelper;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import static org.hamcrest.MatcherAssert.assertThat;

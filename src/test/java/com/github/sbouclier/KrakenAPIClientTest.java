@@ -1,6 +1,7 @@
 package com.github.sbouclier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.sbouclier.mock.MockInitHelper;
 import com.github.sbouclier.result.*;
 import com.github.sbouclier.utils.StreamUtils;
 import org.hamcrest.Matchers;
@@ -11,7 +12,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;

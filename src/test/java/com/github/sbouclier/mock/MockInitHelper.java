@@ -1,4 +1,4 @@
-package com.github.sbouclier;
+package com.github.sbouclier.mock;
 
 import com.github.sbouclier.result.OHLCResult;
 import com.github.sbouclier.result.RecentSpreadResult;
