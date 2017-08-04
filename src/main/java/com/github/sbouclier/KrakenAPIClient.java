@@ -346,14 +346,4 @@ public class KrakenAPIClient {
 
         return client.callPrivate(BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
     }
-
-    public static void main(String[] args) throws KrakenApiException {
-        KrakenAPIClient client = new KrakenAPIClient(
-                "",
-                "");
-
-        //OrdersInformationResult ordersInformationResult = client.getOrdersInformation(Arrays.asList("OGRQC4-Q5C5N-2EYZDP"));
-        //System.out.println(ordersInformationResult.getResult());
-        //ordersInformationResult.getResult().forEach((txid, order) -> System.out.println(txid + " = " + order.description.type));
-    }
 }

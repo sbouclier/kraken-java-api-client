@@ -5,15 +5,11 @@ import com.github.sbouclier.utils.ByteUtils;
 import com.github.sbouclier.utils.CryptoUtils;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLPeerUnverifiedException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.Certificate;
 import java.util.Map;
 
 /**
@@ -55,6 +51,10 @@ public class HttpJsonClient {
             });
         }
 
+        return getPublicJsonResponse(new URL(url.toString()));
+    }
+
+    public String getPublicJsonResponse(URL url) throws IOException {
         final HttpsURLConnection connection = (HttpsURLConnection) new URL(url.toString()).openConnection();
         try {
             connection.setRequestMethod("GET");
@@ -77,9 +77,13 @@ public class HttpJsonClient {
         final String postData = buildPostData(params, nonce);
         final String signature = generateSignature(urlMethod, nonce, postData);
 
+        return getPrivateJsonResponse(new URL(baseUrl + urlMethod), postData, signature);
+    }
+
+    public String getPrivateJsonResponse(URL url, String postData, String signature) throws IOException {
         HttpsURLConnection connection = null;
         try {
-            connection = (HttpsURLConnection) new URL(baseUrl + urlMethod).openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.addRequestProperty("API-Key", apiKey);
             connection.addRequestProperty("API-Sign", signature);
@@ -108,7 +112,7 @@ public class HttpJsonClient {
         return postData.toString();
     }
 
-    private String generateNonce() {
+    public String generateNonce() {
         return String.valueOf(System.currentTimeMillis() * 1000);
     }
 
@@ -125,17 +129,13 @@ public class HttpJsonClient {
             byte[] hmacKey = Base64Utils.base64Decode(this.secret);
 
             hmacDigest = Base64Utils.base64Encode(CryptoUtils.hmacSha512(hmacKey, hmacMessage));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Throwable ex) {
+            ex.printStackTrace();
         }
         return hmacDigest;
     }
 
-    private String getJsonResponse(HttpsURLConnection connection) throws IOException {
+    public String getJsonResponse(HttpsURLConnection connection) throws IOException {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             StringBuilder response = new StringBuilder();
             String line;
@@ -143,31 +143,8 @@ public class HttpJsonClient {
             while ((line = in.readLine()) != null) {
                 response.append(line);
             }
-            System.out.println(response.toString());
+
             return response.toString();
-        }
-    }
-
-    private void printHttpsCertificates(HttpsURLConnection connection) {
-        if (connection != null) {
-            try {
-                System.out.println("Response Code : " + connection.getResponseCode());
-                System.out.println("Cipher Suite : " + connection.getCipherSuite());
-                System.out.println("\n");
-
-                Certificate[] certs = connection.getServerCertificates();
-                for (Certificate cert : certs) {
-                    System.out.println("Cert Type : " + cert.getType());
-                    System.out.println("Cert Hash Code : " + cert.hashCode());
-                    System.out.println("Cert Public Key Algorithm : " + cert.getPublicKey().getAlgorithm());
-                    System.out.println("Cert Public Key Format : " + cert.getPublicKey().getFormat());
-                    System.out.println("\n");
-                }
-            } catch (SSLPeerUnverifiedException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
