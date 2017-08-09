@@ -179,16 +179,17 @@ public class HttpApiClient<T extends Result> {
      * @throws KrakenApiException
      */
     private LastIdExtractedResult extractLastId(String response) throws KrakenApiException {
-        final String lastPattern = ",\"last\":\"{0,1}([0-9]+)\"{0,1}";
+        final String lastPattern = ",([^0-9]*)\"last\":\"{0,1}([0-9]+)\"{0,1}";
 
         Pattern pattern = Pattern.compile(lastPattern);
         Matcher matcher = pattern.matcher(response);
 
         if (matcher.find()) {
             response = response.replaceAll(lastPattern, "");
-            return new LastIdExtractedResult(response, Long.valueOf(matcher.group(1)));
+
+            return new LastIdExtractedResult(response, Long.valueOf(matcher.group(2)));
         } else {
-            throw new KrakenApiException("unuble to extract last id");
+            throw new KrakenApiException("unable to extract last id");
         }
     }
 }

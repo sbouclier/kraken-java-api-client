@@ -143,7 +143,7 @@ public class HttpJsonClient {
             while ((line = in.readLine()) != null) {
                 response.append(line);
             }
-
+            System.out.println(response);
             return response.toString();
         }
     }

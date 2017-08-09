@@ -13,10 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -40,18 +39,18 @@ public class HttpApiClientTest {
     }
 
     @Test
-    public void should_unmarshal_server_time_result() throws IOException, KrakenApiException {
+    public void should_call_valid_public_method() throws IOException, KrakenApiException {
 
         // Given
         final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/server_time.mock.json");
         HttpApiClient<ServerTimeResult> client = new HttpApiClient<>(mockHttpJsonClient);
 
-        // When
         when(mockHttpJsonClient.executePublicQuery(
                 eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.SERVER_TIME.getUrl(0)))
         ).thenReturn(mockResponseBody);
 
+        // When
         ServerTimeResult result = client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.SERVER_TIME, ServerTimeResult.class);
 
         // Then
@@ -62,126 +61,60 @@ public class HttpApiClientTest {
     }
 
     @Test
-    public void should_unmarshal_asset_information_result() throws IOException, KrakenApiException {
+    public void should_call_invalid_public_method_with_error() throws IOException, KrakenApiException {
 
         // Given
-        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/asset_information.mock.json");
-        HttpApiClient<AssetInformationResult> client = new HttpApiClient<>(mockHttpJsonClient);
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/invalid_arguments.mock.json");
+        HttpApiClient<ServerTimeResult> client = new HttpApiClient<>(mockHttpJsonClient);
 
-        AssetInformationResult.AssetInformation xetc = new AssetInformationResult.AssetInformation();
-        xetc.alternateName = "ETC";
-        xetc.assetClass = "currency";
-        xetc.decimals = (byte) 10;
-        xetc.displayDecimals = (byte) 5;
-
-        AssetInformationResult.AssetInformation xeth = new AssetInformationResult.AssetInformation();
-        xeth.alternateName = "ETH";
-        xeth.assetClass = "currency";
-        xeth.decimals = (byte) 10;
-        xeth.displayDecimals = (byte) 5;
-
-        AssetInformationResult.AssetInformation zeur = new AssetInformationResult.AssetInformation();
-        zeur.alternateName = "EUR";
-        zeur.assetClass = "currency";
-        zeur.decimals = (byte) 4;
-        zeur.displayDecimals = (byte) 2;
-
-        AssetInformationResult.AssetInformation zusd = new AssetInformationResult.AssetInformation();
-        zusd.alternateName = "USD";
-        zusd.assetClass = "currency";
-        zusd.decimals = (byte) 4;
-        zusd.displayDecimals = (byte) 2;
-
-        // When
         when(mockHttpJsonClient.executePublicQuery(
                 eq(KrakenAPIClient.BASE_URL),
-                eq(KrakenApiMethod.ASSET_INFORMATION.getUrl(0)))
-        ).thenReturn(mockResponseBody.toString());
-        AssetInformationResult result = client.callPublic(
-                KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class);
+                eq(KrakenApiMethod.SERVER_TIME.getUrl(0)))
+        ).thenReturn(mockResponseBody);
 
-        // Then
-        assertEquals(26, result.getResult().size());
-        assertThat(result.getResult().get("XETC"), samePropertyValuesAs(xetc));
-        assertThat(result.getResult().get("XETH"), samePropertyValuesAs(xeth));
-        assertThat(result.getResult().get("ZEUR"), samePropertyValuesAs(zeur));
-        assertThat(result.getResult().get("ZUSD"), samePropertyValuesAs(zusd));
+        // When
+        try {
+            client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.SERVER_TIME, ServerTimeResult.class);
 
-        verify(mockHttpJsonClient).executePublicQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.ASSET_INFORMATION.getUrl(0)));
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[EGeneral:Invalid arguments]"));
+        }
+
+        verify(mockHttpJsonClient).executePublicQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.SERVER_TIME.getUrl(0)));
     }
 
     @Test
-    public void should_unmarshal_asset_pairs_result() throws IOException, KrakenApiException {
+    public void should_call_invalid_public_method_with_unmarshalled_response() throws IOException, KrakenApiException {
 
         // Given
-        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/asset_pairs.mock.json");
-        HttpApiClient<AssetPairsResult> client = new HttpApiClient<>(mockHttpJsonClient);
+        final String mockResponseBody = "";
+        HttpApiClient<ServerTimeResult> client = new HttpApiClient<>(mockHttpJsonClient);
 
-        // When
         when(mockHttpJsonClient.executePublicQuery(
                 eq(KrakenAPIClient.BASE_URL),
-                eq(KrakenApiMethod.ASSET_PAIRS.getUrl(0)))
-        ).thenReturn(mockResponseBody.toString());
-        AssetPairsResult result = client.callPublic(
-                KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class);
+                eq(KrakenApiMethod.SERVER_TIME.getUrl(0)))
+        ).thenReturn(mockResponseBody);
 
-        // Then
-        AssetPairsResult.AssetPair pair = result.getResult().get("XETCXXBT");
+        // When
+        try {
+            client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.SERVER_TIME, ServerTimeResult.class);
 
-        assertEquals(64, result.getResult().size());
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[unable to query Kraken API]"));
+        }
 
-        assertEquals("ETCXBT", pair.alternatePairName);
-        assertEquals("currency", pair.baseAssetClass);
-        assertEquals("XETC", pair.baseAssetId);
-        assertEquals("currency", pair.quoteAssetClass);
-        assertEquals("XXBT", pair.quoteAssetId);
-        assertEquals("unit", pair.lot);
-
-        assertEquals(8, pair.pairDecimals.intValue());
-        assertEquals(8, pair.lotDecimals.intValue());
-        assertEquals(1, pair.lotMultiplier.intValue());
-
-        assertThat(pair.leverageBuy, contains(2, 3));
-        assertThat(pair.leverageSell, contains(2, 3));
-
-        assertThat(pair.fees, contains(
-                new AssetPairsResult.AssetPair.Fee(0, 0.26f),
-                new AssetPairsResult.AssetPair.Fee(50000, 0.24f),
-                new AssetPairsResult.AssetPair.Fee(100000, 0.22f),
-                new AssetPairsResult.AssetPair.Fee(250000, 0.2f),
-                new AssetPairsResult.AssetPair.Fee(500000, 0.18f),
-                new AssetPairsResult.AssetPair.Fee(1000000, 0.16f),
-                new AssetPairsResult.AssetPair.Fee(2500000, 0.14f),
-                new AssetPairsResult.AssetPair.Fee(5000000, 0.12f),
-                new AssetPairsResult.AssetPair.Fee(10000000, 0.1f)
-        ));
-
-        assertThat(pair.feesMaker, contains(
-                new AssetPairsResult.AssetPair.Fee(0, 0.16f),
-                new AssetPairsResult.AssetPair.Fee(50000, 0.14f),
-                new AssetPairsResult.AssetPair.Fee(100000, 0.12f),
-                new AssetPairsResult.AssetPair.Fee(250000, 0.1f),
-                new AssetPairsResult.AssetPair.Fee(500000, 0.08f),
-                new AssetPairsResult.AssetPair.Fee(1000000, 0.06f),
-                new AssetPairsResult.AssetPair.Fee(2500000, 0.04f),
-                new AssetPairsResult.AssetPair.Fee(5000000, 0.02f),
-                new AssetPairsResult.AssetPair.Fee(10000000, 0f)
-        ));
-
-        assertEquals(80, pair.marginCall.intValue());
-        assertEquals(40, pair.marginStop.intValue());
-
-        verify(mockHttpJsonClient).executePublicQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.ASSET_PAIRS.getUrl(0)));
+        verify(mockHttpJsonClient).executePublicQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.SERVER_TIME.getUrl(0)));
     }
 
     @Test
-    public void should_unmarshal_ticker_information_result() throws IOException, KrakenApiException {
+    public void should_call_valid_public_method_with_params() throws IOException, KrakenApiException {
 
         // Given
         final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/ticker_information.mock.json");
         HttpApiClient<TickerInformationResult> client = new HttpApiClient<>(mockHttpJsonClient);
 
-        // When
         when(mockHttpJsonClient.executePublicQuery(
                 eq(KrakenAPIClient.BASE_URL),
                 eq(KrakenApiMethod.TICKER_INFORMATION.getUrl(0)),
@@ -190,6 +123,8 @@ public class HttpApiClientTest {
 
         Map<String, String> params = new HashMap<>();
         params.put("pair", "BTCEUR,ETHEUR");
+
+        // When
         TickerInformationResult result = client.callPublic(
                 KrakenAPIClient.BASE_URL,
                 KrakenApiMethod.TICKER_INFORMATION,
@@ -207,39 +142,359 @@ public class HttpApiClientTest {
     }
 
     @Test
-    public void should_unmarshal_order_book_result() throws KrakenApiException, IOException {
+    public void should_call_invalid_public_method_with_params_and_error() throws IOException, KrakenApiException {
 
         // Given
-        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/order_book.mock.json");
-        HttpApiClient<OrderBookResult> client = new HttpApiClient<>(mockHttpJsonClient);
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/invalid_arguments.mock.json");
+        HttpApiClient<TickerInformationResult> client = new HttpApiClient<>(mockHttpJsonClient);
 
-        // When
         when(mockHttpJsonClient.executePublicQuery(
                 eq(KrakenAPIClient.BASE_URL),
-                eq(KrakenApiMethod.ORDER_BOOK.getUrl(0)),
+                eq(KrakenApiMethod.TICKER_INFORMATION.getUrl(0)),
+                any())
+        ).thenReturn(mockResponseBody.toString());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR,ETHEUR");
+
+        // When
+        try {
+            client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.TICKER_INFORMATION, TickerInformationResult.class, params);
+
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[EGeneral:Invalid arguments]"));
+        }
+
+        verify(mockHttpJsonClient).executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.TICKER_INFORMATION.getUrl(0)),
+                any());
+    }
+
+    @Test
+    public void should_call_invalid_public_method_with_params_and_unmarshalled_response() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = "";
+        HttpApiClient<TickerInformationResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.TICKER_INFORMATION.getUrl(0)),
+                any())
+        ).thenReturn(mockResponseBody.toString());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR,ETHEUR");
+
+        // When
+        try {
+            client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.TICKER_INFORMATION, TickerInformationResult.class, params);
+
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[unable to query Kraken API]"));
+        }
+
+        verify(mockHttpJsonClient).executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.TICKER_INFORMATION.getUrl(0)),
+                any());
+    }
+
+    @Test
+    public void should_call_valid_public_method_with_last_id() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/ohlc.mock.json");
+        HttpApiClient<OHLCResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.OHLC.getUrl(0)),
                 any())
         ).thenReturn(mockResponseBody.toString());
 
         Map<String, String> params = new HashMap<>();
         params.put("pair", "BTCEUR");
-        params.put("count", "3");
-        OrderBookResult result = client.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDER_BOOK, OrderBookResult.class, params);
+        params.put("interval", "1440");
+
+        // When
+        OHLCResult result = client.callPublicWithLastId(
+                KrakenAPIClient.BASE_URL,
+                KrakenApiMethod.OHLC,
+                OHLCResult.class, params);
 
         // Then
-        assertEquals(100, result.getResult().get("XXBTZEUR").asks.size());
-        assertThat(result.getResult().get("XXBTZEUR").asks.get(0).price, Matchers.comparesEqualTo(BigDecimal.valueOf(2378.58700)));
-        assertThat(result.getResult().get("XXBTZEUR").asks.get(0).volume, Matchers.comparesEqualTo(BigDecimal.valueOf(1.089)));
-        assertEquals(result.getResult().get("XXBTZEUR").asks.get(0).timestamp.intValue(), 1501320458);
-        assertThat(result.getResult().get("XXBTZEUR").asks.get(1).price, Matchers.comparesEqualTo(BigDecimal.valueOf(2378.96900)));
-        assertThat(result.getResult().get("XXBTZEUR").asks.get(1).volume, Matchers.comparesEqualTo(BigDecimal.valueOf(0.022)));
-        assertEquals(result.getResult().get("XXBTZEUR").asks.get(1).timestamp.intValue(), 1501320449);
-        assertThat(result.getResult().get("XXBTZEUR").asks.get(2).price, Matchers.comparesEqualTo(BigDecimal.valueOf(2378.97100)));
-        assertThat(result.getResult().get("XXBTZEUR").asks.get(2).volume, Matchers.comparesEqualTo(BigDecimal.valueOf(0.058)));
-        assertEquals(result.getResult().get("XXBTZEUR").asks.get(2).timestamp.intValue(), 1501319911);
+        assertEquals(720, result.getResult().get("XXBTZEUR").size());
+        assertEquals(result.getLastId().intValue(), 1501200000);
 
         verify(mockHttpJsonClient).executePublicQuery(
                 eq(KrakenAPIClient.BASE_URL),
-                eq(KrakenApiMethod.ORDER_BOOK.getUrl(0)),
+                eq(KrakenApiMethod.OHLC.getUrl(0)),
+                any());
+    }
+
+    @Test
+    public void should_call_invalid_public_method_with_unextractable_last_id() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/invalid_arguments.mock.json");
+        HttpApiClient<OHLCResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.OHLC.getUrl(0)),
+                any())
+        ).thenReturn(mockResponseBody.toString());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
+        params.put("interval", "1440");
+
+        // When
+        try {
+            client.callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
+
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[unable to extract last id]"));
+        }
+
+        verify(mockHttpJsonClient).executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.OHLC.getUrl(0)),
+                any());
+    }
+
+    @Test
+    public void should_call_invalid_public_method_with_last_id_and_unmarshalled_response() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/unmarshalled_last_id.mock.json");
+        HttpApiClient<OHLCResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.OHLC.getUrl(0)),
+                any())
+        ).thenReturn(mockResponseBody.toString());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
+        params.put("interval", "1440");
+
+        // When
+        try {
+            client.callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
+
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[unable to query Kraken API]"));
+        }
+
+        verify(mockHttpJsonClient).executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.OHLC.getUrl(0)),
+                any());
+    }
+
+    @Test
+    public void should_call_invalid_public_method_with_last_id_and_error() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/invalid_arguments_last_id.mock.json");
+        HttpApiClient<OHLCResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.OHLC.getUrl(0)),
+                any())
+        ).thenReturn(mockResponseBody.toString());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("pair", "BTCEUR");
+        params.put("interval", "1440");
+
+        // When
+        try {
+            client.callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
+
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[EGeneral:Invalid arguments]"));
+        }
+
+        verify(mockHttpJsonClient).executePublicQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.OHLC.getUrl(0)),
+                any());
+    }
+
+    @Test
+    public void should_call_valid_private_method() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/account_balance.mock.json");
+        HttpApiClient<AccountBalanceResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePrivateQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.ACCOUNT_BALANCE.getUrl(0)))
+        ).thenReturn(mockResponseBody);
+
+        // When
+        AccountBalanceResult result = client.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ACCOUNT_BALANCE, AccountBalanceResult.class);
+
+        // Then
+        assertThat(result.getResult().get("ZEUR"), Matchers.comparesEqualTo(BigDecimal.valueOf(86.1602)));
+        assertThat(result.getResult().get("XXBT"), Matchers.comparesEqualTo(BigDecimal.valueOf(0.0472043520)));
+        assertThat(result.getResult().get("XXRP"), Matchers.comparesEqualTo(BigDecimal.valueOf(100)));
+        assertThat(result.getResult().get("BCH"), Matchers.comparesEqualTo(BigDecimal.valueOf(0.0472043520)));
+
+        verify(mockHttpJsonClient).executePrivateQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.ACCOUNT_BALANCE.getUrl(0)));
+    }
+
+    @Test
+    public void should_call_invalid_private_method_with_error() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/invalid_arguments.mock.json");
+        HttpApiClient<AccountBalanceResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePrivateQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.ACCOUNT_BALANCE.getUrl(0)))
+        ).thenReturn(mockResponseBody);
+
+        // When
+        try {
+            client.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ACCOUNT_BALANCE, AccountBalanceResult.class);
+
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[EGeneral:Invalid arguments]"));
+        }
+
+        verify(mockHttpJsonClient).executePrivateQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.ACCOUNT_BALANCE.getUrl(0)));
+    }
+
+    @Test
+    public void should_call_invalid_private_method_with_unmarshalled_response() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = "";
+        HttpApiClient<AccountBalanceResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePrivateQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.ACCOUNT_BALANCE.getUrl(0)))
+        ).thenReturn(mockResponseBody);
+
+        // When
+        try {
+            client.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ACCOUNT_BALANCE, AccountBalanceResult.class);
+
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[unable to query Kraken API]"));
+        }
+
+        verify(mockHttpJsonClient).executePrivateQuery(eq(KrakenAPIClient.BASE_URL), eq(KrakenApiMethod.ACCOUNT_BALANCE.getUrl(0)));
+    }
+
+    @Test
+    public void should_call_valid_private_method_with_params() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/orders_information.mock.json");
+        HttpApiClient<OrdersInformationResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePrivateQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.ORDERS_INFORMATION.getUrl(0)),
+                any())
+        ).thenReturn(mockResponseBody.toString());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("txid", "OGRQC4-Q5C5N-2EYZDZ");
+
+        // When
+        OrdersInformationResult result = client.callPrivate(
+                KrakenAPIClient.BASE_URL,
+                KrakenApiMethod.ORDERS_INFORMATION,
+                OrdersInformationResult.class, params);
+
+        // Then
+        assertThat(result.getResult().size(), equalTo(1));
+        assertThat(result.getResult().get("OGRQC4-Q5C5N-2EYZDZ").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2100)));
+
+        verify(mockHttpJsonClient).executePrivateQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.ORDERS_INFORMATION.getUrl(0)),
+                any());
+    }
+
+    @Test
+    public void should_call_invalid_private_method_with_params_and_error() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = StreamUtils.getResourceAsString(this.getClass(), "json/invalid_arguments.mock.json");
+        HttpApiClient<OrdersInformationResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePrivateQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.ORDERS_INFORMATION.getUrl(0)),
+                any())
+        ).thenReturn(mockResponseBody.toString());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("txid", "OGRQC4-Q5C5N-2EYZDZ");
+
+        // When
+        try {
+            client.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
+
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[EGeneral:Invalid arguments]"));
+        }
+
+        verify(mockHttpJsonClient).executePrivateQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.ORDERS_INFORMATION.getUrl(0)),
+                any());
+    }
+
+    @Test
+    public void should_call_invalid_private_method_with_params_and_unmarshalled_response() throws IOException, KrakenApiException {
+
+        // Given
+        final String mockResponseBody = "";
+        HttpApiClient<OrdersInformationResult> client = new HttpApiClient<>(mockHttpJsonClient);
+
+        when(mockHttpJsonClient.executePrivateQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.ORDERS_INFORMATION.getUrl(0)),
+                any())
+        ).thenReturn(mockResponseBody.toString());
+
+        Map<String, String> params = new HashMap<>();
+        params.put("txid", "OGRQC4-Q5C5N-2EYZDZ");
+
+        // When
+        try {
+            client.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
+
+            fail();
+        } catch (KrakenApiException ex) {
+            assertThat(ex.getMessage(), equalTo("[unable to query Kraken API]"));
+        }
+
+        verify(mockHttpJsonClient).executePrivateQuery(
+                eq(KrakenAPIClient.BASE_URL),
+                eq(KrakenApiMethod.ORDERS_INFORMATION.getUrl(0)),
                 any());
     }
 }
