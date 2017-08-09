@@ -26,16 +26,6 @@ import static org.mockito.ArgumentMatchers.any;
  */
 public class HttpJsonClientTest {
 
-    @Before
-    public void setUp() throws IOException {
-        //spyClient = Mockito.spy(HttpJsonClient.class);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        //verifyNoMoreInteractions(spyClient);
-    }
-
     @Test
     public void should_execute_public_query_without_params() throws IOException, KrakenApiException {
 

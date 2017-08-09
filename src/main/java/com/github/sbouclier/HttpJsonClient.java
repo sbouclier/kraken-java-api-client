@@ -117,7 +117,16 @@ public class HttpJsonClient {
         return String.valueOf(System.currentTimeMillis() * 1000);
     }
 
-    private String generateSignature(String path, String nonce, String postData) {
+    /**
+     * Generate signature
+     *
+     * @param path     URI path
+     * @param nonce
+     * @param postData POST data
+     * @return generated signature
+     * @throws KrakenApiException
+     */
+    private String generateSignature(String path, String nonce, String postData) throws KrakenApiException {
         // Algorithm: HMAC-SHA512 of (URI path + SHA256(nonce + POST data)) and base64 decoded secret API key
 
         String hmacDigest = null;
@@ -131,7 +140,7 @@ public class HttpJsonClient {
 
             hmacDigest = Base64Utils.base64Encode(CryptoUtils.hmacSha512(hmacKey, hmacMessage));
         } catch (Throwable ex) {
-            ex.printStackTrace();
+            throw new KrakenApiException("unable to generate signature");
         }
         return hmacDigest;
     }
@@ -144,7 +153,7 @@ public class HttpJsonClient {
             while ((line = in.readLine()) != null) {
                 response.append(line);
             }
-            System.out.println(response);
+
             return response.toString();
         }
     }
