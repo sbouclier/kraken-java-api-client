@@ -3,7 +3,9 @@ package com.github.sbouclier.mock;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLPeerUnverifiedException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.security.cert.Certificate;
@@ -56,5 +58,10 @@ public class MockHttpsURLConnection extends HttpsURLConnection {
 
             }
         };
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return new ByteArrayInputStream("read inputstream".getBytes("UTF-8"));
     }
 }

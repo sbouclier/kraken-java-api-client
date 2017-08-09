@@ -55,7 +55,8 @@ public class HttpJsonClient {
     }
 
     public String getPublicJsonResponse(URL url) throws IOException {
-        final HttpsURLConnection connection = (HttpsURLConnection) new URL(url.toString()).openConnection();
+        final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+
         try {
             connection.setRequestMethod("GET");
             return getJsonResponse(connection);
