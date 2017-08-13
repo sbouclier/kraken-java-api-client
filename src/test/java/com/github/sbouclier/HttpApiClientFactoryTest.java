@@ -42,4 +42,10 @@ public class HttpApiClientFactoryTest {
         assertThat(factory.getHttpApiClient("key", "secret",KrakenApiMethod.CLOSED_ORDERS), instanceOf(HttpApiClient.class));
         assertThat(factory.getHttpApiClient("key", "secret",KrakenApiMethod.ORDERS_INFORMATION), instanceOf(HttpApiClient.class));
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void unknown_method_should_throws_exception_for_private_http_api_client() {
+        HttpApiClientFactory factory = new HttpApiClientFactory();
+        factory.getHttpApiClient("key", "secret", KrakenApiMethod.SERVER_TIME);
+    }
 }
