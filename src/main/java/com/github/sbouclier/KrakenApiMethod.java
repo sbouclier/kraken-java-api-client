@@ -20,7 +20,13 @@ public enum KrakenApiMethod {
     TRADE_BALANCE("TradeBalance", true),
     OPEN_ORDERS("OpenOrders", true),
     CLOSED_ORDERS("ClosedOrders", true),
-    ORDERS_INFORMATION("QueryOrders", true);
+    ORDERS_INFORMATION("QueryOrders", true),
+    TRADES_HISTORY("TradesHistory", true),
+    TRADES_INFORMATION("QueryTrades", true),
+    OPEN_POSITIONS("OpenPositions", true),
+    LEDGERS_INFORMATION("Ledgers", true),
+    QUERY_LEDGERS("QueryLedgers", true),
+    TRADE_VOLUME("TradeVolume", true);
 
     private String url;
     private boolean isPrivate;

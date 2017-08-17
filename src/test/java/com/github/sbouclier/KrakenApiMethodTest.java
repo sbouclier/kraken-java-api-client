@@ -20,7 +20,7 @@ public class KrakenApiMethodTest {
 
     @Test
     public void should_return_values() {
-        assertThat(13, equalTo(KrakenApiMethod.values().length));
+        assertThat(19, equalTo(KrakenApiMethod.values().length));
     }
 
     @Test

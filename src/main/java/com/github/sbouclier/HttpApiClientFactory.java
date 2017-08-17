@@ -44,6 +44,8 @@ public class HttpApiClientFactory {
                 return new HttpApiClient<ClosedOrdersResult>(apiKey, apiSecret);
             case ORDERS_INFORMATION:
                 return new HttpApiClient<OrdersInformationResult>(apiKey, apiSecret);
+            case TRADES_HISTORY:
+                return new HttpApiClient<TradesHistoryResult>(apiKey, apiSecret);
             default:
                 throw new IllegalArgumentException("Unknown Kraken API method");
         }

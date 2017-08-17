@@ -41,6 +41,7 @@ public class HttpApiClientFactoryTest {
         assertThat(factory.getHttpApiClient("key", "secret",KrakenApiMethod.OPEN_ORDERS), instanceOf(HttpApiClient.class));
         assertThat(factory.getHttpApiClient("key", "secret",KrakenApiMethod.CLOSED_ORDERS), instanceOf(HttpApiClient.class));
         assertThat(factory.getHttpApiClient("key", "secret",KrakenApiMethod.ORDERS_INFORMATION), instanceOf(HttpApiClient.class));
+        assertThat(factory.getHttpApiClient("key", "secret",KrakenApiMethod.TRADES_HISTORY), instanceOf(HttpApiClient.class));
     }
 
     @Test(expected = IllegalArgumentException.class)

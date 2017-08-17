@@ -556,4 +556,25 @@ public class KrakenAPIClientTest {
         verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.ORDERS_INFORMATION);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
     }
+
+    @Test
+    public void should_return_trades_history() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/trades_history.mock.json");
+        TradesHistoryResult mockResult = new ObjectMapper().readValue(jsonResult, TradesHistoryResult.class);
+
+        // When
+        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.TRADES_HISTORY)).thenReturn(mockClient);
+        when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADES_HISTORY, TradesHistoryResult.class)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        TradesHistoryResult result = client.getTradesHistory();
+
+        assertThat(result.getResult().count, equalTo(51L));
+        assertThat(result.getResult().trades.get("TICACU-DPSCI-EJ7FIR").price, Matchers.comparesEqualTo(BigDecimal.valueOf(2030)));
+
+        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.TRADES_HISTORY);
+        verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADES_HISTORY, TradesHistoryResult.class);
+    }
 }

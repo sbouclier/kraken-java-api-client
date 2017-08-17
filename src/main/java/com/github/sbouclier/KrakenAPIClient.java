@@ -346,4 +346,15 @@ public class KrakenAPIClient {
 
         return client.callPrivate(BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
     }
+
+    /**
+     * Get trades history
+     *
+     * @return trades history
+     * @throws KrakenApiException
+     */
+    public TradesHistoryResult getTradesHistory() throws KrakenApiException {
+        HttpApiClient<TradesHistoryResult> client = (HttpApiClient<TradesHistoryResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.TRADES_HISTORY);
+        return client.callPrivate(BASE_URL, KrakenApiMethod.TRADES_HISTORY, TradesHistoryResult.class);
+    }
 }
