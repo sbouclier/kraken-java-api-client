@@ -154,6 +154,8 @@ public class HttpJsonClient {
                 response.append(line);
             }
 
+            System.out.println(response);
+
             return response.toString();
         }
     }
