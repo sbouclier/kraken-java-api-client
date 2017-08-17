@@ -335,6 +335,7 @@ public class KrakenAPIClient {
     /**
      * Get orders information
      *
+     * @param transactions list of transactions
      * @return orders information
      * @throws KrakenApiException
      */
@@ -356,5 +357,21 @@ public class KrakenAPIClient {
     public TradesHistoryResult getTradesHistory() throws KrakenApiException {
         HttpApiClient<TradesHistoryResult> client = (HttpApiClient<TradesHistoryResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.TRADES_HISTORY);
         return client.callPrivate(BASE_URL, KrakenApiMethod.TRADES_HISTORY, TradesHistoryResult.class);
+    }
+
+    /**
+     * Get trades information
+     *
+     * @param transactions list of transactions
+     * @return trades information
+     * @throws KrakenApiException
+     */
+    public TradesInformationResult getTradesInformation(List<String> transactions) throws KrakenApiException {
+        HttpApiClient<TradesInformationResult> client = (HttpApiClient<TradesInformationResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.TRADES_INFORMATION);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("txid", transactions.stream().collect(Collectors.joining(",")));
+
+        return client.callPrivate(BASE_URL, KrakenApiMethod.TRADES_INFORMATION, TradesInformationResult.class, params);
     }
 }

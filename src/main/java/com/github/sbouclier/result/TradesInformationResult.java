@@ -9,30 +9,13 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 /**
- * Result from getTradesHistory
+ * Result from getTradesInformation
  *
  * @author Stéphane Bouclier
  */
-public class TradesHistoryResult extends Result<TradesHistoryResult.TradesHistory> {
+public class TradesInformationResult extends Result<Map<String, TradesInformationResult.TradeInformation>> {
 
-    public static class TradesHistory {
-
-        @JsonProperty("trades")
-        public Map<String, TradeHistory> trades;
-
-        public Long count;
-
-        @Override
-        public String toString() {
-            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                    .append("trades", trades)
-                    .append("count", count)
-                    .toString();
-        }
-    }
-
-    // TODO extract to TradeInformation
-    public static class TradeHistory {
+    public static class TradeInformation {
 
         // TODO extract to OrderDirectionType
         public enum Type {

@@ -1,0 +1,33 @@
+{
+  "error":[
+
+  ],
+  "result":{
+    "TBKW74-IIBSM-LPZRWW":{
+      "ordertxid":"OW7A4A-JN5HV-MWCF3H",
+      "pair":"XXBTZEUR",
+      "time":1502988632.6143,
+      "type":"buy",
+      "ordertype":"limit",
+      "price":"3690.00000",
+      "cost":"18.45000",
+      "fee":"0.02952",
+      "vol":"0.00500000",
+      "margin":"0.00000",
+      "misc":""
+    },
+    "TW2JUT-MIK3P-RML5VC":{
+      "ordertxid":"OK7VVF-P26QM-JP4SVX",
+      "pair":"XXBTZEUR",
+      "time":1502984067.2439,
+      "type":"buy",
+      "ordertype":"limit",
+      "price":"3815.00000",
+      "cost":"38.15000",
+      "fee":"0.06104",
+      "vol":"0.01000000",
+      "margin":"0.00000",
+      "misc":""
+    }
+  }
+}

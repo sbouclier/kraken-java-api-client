@@ -128,4 +128,18 @@ OGRQD4-Q5C5N-2EYZDP = SELL
 OC7Z5B-NLAHB-6MQNLA = BUY
 ```
 
+## Get trades history
+
+```java
+TradesHistoryResult result = client.getTradesHistory();
+System.out.println(result.getResult());
+```
+
+## Get trades information
+
+```java
+TradesInformationResult result = client.getTradesInformation(Arrays.asList("TBKW74-IIBSM-LPZRWW", "TW2JUT-MIK3P-RML5VC"));
+System.out.println(result.getResult());
+```
+
 Others methods coming soon...
