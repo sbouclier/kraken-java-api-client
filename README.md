@@ -142,4 +142,11 @@ TradesInformationResult result = client.getTradesInformation(Arrays.asList("TBKW
 System.out.println(result.getResult());
 ```
 
+## Get open positions
+
+```java
+OpenPositionsResult result = client.getOpenPositions(Arrays.asList("TY3TFI-KXBN3-LEICZJ"));
+System.out.println(result.getResult());
+```
+
 Others methods coming soon...

@@ -374,4 +374,20 @@ public class KrakenAPIClient {
 
         return client.callPrivate(BASE_URL, KrakenApiMethod.TRADES_INFORMATION, TradesInformationResult.class, params);
     }
+
+    /**
+     * Get open positions
+     *
+     * @param transactions list of transactions
+     * @return open positions
+     * @throws KrakenApiException
+     */
+    public OpenPositionsResult getOpenPositions(List<String> transactions) throws KrakenApiException {
+        HttpApiClient<OpenPositionsResult> client = (HttpApiClient<OpenPositionsResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.OPEN_POSITIONS);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("txid", transactions.stream().collect(Collectors.joining(",")));
+
+        return client.callPrivate(BASE_URL, KrakenApiMethod.OPEN_POSITIONS, OpenPositionsResult.class, params);
+    }
 }

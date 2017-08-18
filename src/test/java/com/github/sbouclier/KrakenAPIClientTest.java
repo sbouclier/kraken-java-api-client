@@ -602,4 +602,28 @@ public class KrakenAPIClientTest {
         verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.TRADES_INFORMATION);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADES_INFORMATION, TradesInformationResult.class, params);
     }
+
+    @Test
+    public void should_return_open_positions() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/open_positions.mock.json");
+        OpenPositionsResult mockResult = new ObjectMapper().readValue(jsonResult, OpenPositionsResult.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("txid", "TY3TFI-KXBN3-LEICZJ");
+
+        // When
+        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.OPEN_POSITIONS)).thenReturn(mockClient);
+        when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_POSITIONS, OpenPositionsResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        OpenPositionsResult result = client.getOpenPositions(Arrays.asList("TY3TFI-KXBN3-LEICZJ"));
+
+        assertThat(result.getResult().size(), equalTo(1));
+        assertThat(result.getResult().get("TY3TFI-KXBN3-LEICZJ").orderTransactionId, equalTo("OCNUXJ-FET73-L2AZFR"));
+
+        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.OPEN_POSITIONS);
+        verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_POSITIONS, OpenPositionsResult.class, params);
+    }
 }

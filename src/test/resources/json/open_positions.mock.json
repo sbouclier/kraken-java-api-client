@@ -1,0 +1,24 @@
+{
+  "error":[
+
+  ],
+  "result":{
+    "TY3TFI-KXBN3-LEICZJ":{
+      "ordertxid":"OCNUXJ-FET73-L2AZFR",
+      "posstatus":"open",
+      "pair":"XXBTZEUR",
+      "time":1503052721.3897,
+      "type":"sell",
+      "ordertype":"limit",
+      "cost":"7.43200",
+      "fee":"0.02007",
+      "vol":"0.00200000",
+      "vol_closed":"0.00000000",
+      "margin":"3.71600",
+      "terms":"0.0100% per 4 hours",
+      "rollovertm":"1503067121",
+      "misc":"",
+      "oflags":""
+    }
+  }
+}
