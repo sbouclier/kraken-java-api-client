@@ -2,6 +2,7 @@ package com.github.sbouclier.result;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.github.sbouclier.result.common.OrderDirection;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -33,23 +34,6 @@ public class TradesHistoryResult extends Result<TradesHistoryResult.TradesHistor
 
     // TODO extract to TradeInformation
     public static class TradeHistory {
-
-        // TODO extract to OrderDirectionType
-        public enum Type {
-            BUY("buy"),
-            SELL("sell");
-
-            private String value;
-
-            Type(String value) {
-                this.value = value;
-            }
-
-            @JsonValue
-            public String getValue() {
-                return value;
-            }
-        }
 
         // TODO extract to OrderType
         public enum OrderType {
@@ -87,7 +71,8 @@ public class TradesHistoryResult extends Result<TradesHistoryResult.TradesHistor
         @JsonProperty("time")
         public Long tradeTimestamp;
 
-        public Type type;
+        @JsonProperty("type")
+        public OrderDirection orderDirection;
 
         @JsonProperty("ordertype")
         public OrderType orderType;
@@ -112,7 +97,7 @@ public class TradesHistoryResult extends Result<TradesHistoryResult.TradesHistor
                     .append("orderTransactionId", orderTransactionId)
                     .append("assetPair", assetPair)
                     .append("tradeTimestamp", tradeTimestamp)
-                    .append("type", type)
+                    .append("orderDirection", orderDirection)
                     .append("orderType", orderType)
                     .append("price", price)
                     .append("cost", cost)

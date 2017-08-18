@@ -2,6 +2,7 @@ package com.github.sbouclier.result;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.github.sbouclier.result.common.OrderDirection;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -16,23 +17,6 @@ import java.util.Map;
 public class TradesInformationResult extends Result<Map<String, TradesInformationResult.TradeInformation>> {
 
     public static class TradeInformation {
-
-        // TODO extract to OrderDirectionType
-        public enum Type {
-            BUY("buy"),
-            SELL("sell");
-
-            private String value;
-
-            Type(String value) {
-                this.value = value;
-            }
-
-            @JsonValue
-            public String getValue() {
-                return value;
-            }
-        }
 
         // TODO extract to OrderType
         public enum OrderType {
@@ -70,7 +54,8 @@ public class TradesInformationResult extends Result<Map<String, TradesInformatio
         @JsonProperty("time")
         public Long tradeTimestamp;
 
-        public Type type;
+        @JsonProperty("type")
+        public OrderDirection orderDirection;
 
         @JsonProperty("ordertype")
         public OrderType orderType;
@@ -95,7 +80,7 @@ public class TradesInformationResult extends Result<Map<String, TradesInformatio
                     .append("orderTransactionId", orderTransactionId)
                     .append("assetPair", assetPair)
                     .append("tradeTimestamp", tradeTimestamp)
-                    .append("type", type)
+                    .append("orderDirection", orderDirection)
                     .append("orderType", orderType)
                     .append("price", price)
                     .append("cost", cost)

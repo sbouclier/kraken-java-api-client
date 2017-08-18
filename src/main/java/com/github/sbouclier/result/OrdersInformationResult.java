@@ -2,6 +2,7 @@ package com.github.sbouclier.result;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.github.sbouclier.result.common.OrderDirection;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -38,22 +39,6 @@ public class OrdersInformationResult extends Result<Map<String, OrdersInformatio
 
         public static class Description {
 
-            public enum Type {
-                BUY("buy"),
-                SELL("sell");
-
-                private String value;
-
-                Type(String value) {
-                    this.value = value;
-                }
-
-                @JsonValue
-                public String getValue() {
-                    return value;
-                }
-            }
-
             public enum OrderType {
                 MARKET("market"),
                 LIMIT("limit"),
@@ -83,7 +68,8 @@ public class OrdersInformationResult extends Result<Map<String, OrdersInformatio
             @JsonProperty("pair")
             public String assetPair;
 
-            public Type type;
+            @JsonProperty("type")
+            public OrderDirection orderDirection;
 
             @JsonProperty("ordertype")
             public OrderType orderType;
@@ -101,7 +87,7 @@ public class OrdersInformationResult extends Result<Map<String, OrdersInformatio
             public String toString() {
                 return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                         .append("assetPair", assetPair)
-                        .append("type", type)
+                        .append("orderDirection", orderDirection)
                         .append("orderType", orderType)
                         .append("price", price)
                         .append("secondaryPrice", secondaryPrice)
