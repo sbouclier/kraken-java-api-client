@@ -149,4 +149,11 @@ OpenPositionsResult result = client.getOpenPositions(Arrays.asList("TY3TFI-KXBN3
 System.out.println(result.getResult());
 ```
 
+## Get ledgers information
+
+```java
+LedgersInformationResult result = client.getLedgersInformation();
+System.out.println(result.getResult());
+```
+
 Others methods coming soon...

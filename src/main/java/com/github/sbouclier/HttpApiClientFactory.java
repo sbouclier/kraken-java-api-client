@@ -1,6 +1,7 @@
 package com.github.sbouclier;
 
 import com.github.sbouclier.result.*;
+import com.github.sbouclier.result.LedgersInformationResult;
 
 /**
  * HttpApiClient factory
@@ -50,6 +51,8 @@ public class HttpApiClientFactory {
                 return new HttpApiClient<TradesInformationResult>(apiKey, apiSecret);
             case OPEN_POSITIONS:
                 return new HttpApiClient<OpenPositionsResult>(apiKey, apiSecret);
+            case LEDGERS_INFORMATION:
+                return new HttpApiClient<LedgersInformationResult>(apiKey, apiSecret);
             default:
                 throw new IllegalArgumentException("Unknown Kraken API method");
         }

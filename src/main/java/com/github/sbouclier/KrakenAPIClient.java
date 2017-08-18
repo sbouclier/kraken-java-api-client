@@ -390,4 +390,15 @@ public class KrakenAPIClient {
 
         return client.callPrivate(BASE_URL, KrakenApiMethod.OPEN_POSITIONS, OpenPositionsResult.class, params);
     }
+
+    /**
+     * Get ledgers information
+     *
+     * @return ledgers information
+     * @throws KrakenApiException
+     */
+    public LedgersInformationResult getLedgersInformation() throws KrakenApiException {
+        HttpApiClient<LedgersInformationResult> client = (HttpApiClient<LedgersInformationResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.LEDGERS_INFORMATION);
+        return client.callPrivate(BASE_URL, KrakenApiMethod.LEDGERS_INFORMATION, LedgersInformationResult.class);
+    }
 }

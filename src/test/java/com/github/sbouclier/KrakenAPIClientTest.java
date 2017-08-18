@@ -626,4 +626,25 @@ public class KrakenAPIClientTest {
         verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.OPEN_POSITIONS);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_POSITIONS, OpenPositionsResult.class, params);
     }
+
+    @Test
+    public void should_return_ledgers_information() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/ledgers_information.mock.json");
+        LedgersInformationResult mockResult = new ObjectMapper().readValue(jsonResult, LedgersInformationResult.class);
+
+        // When
+        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.LEDGERS_INFORMATION)).thenReturn(mockClient);
+        when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.LEDGERS_INFORMATION, LedgersInformationResult.class)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        LedgersInformationResult result = client.getLedgersInformation();
+
+        assertThat(result.getResult().count, equalTo(124L));
+        assertThat(result.getResult().ledger.get("LKHYSJ-DXPLB-VDMZAL").referenceId, equalTo("TFS77K-XLVZ2-C7OO5I"));
+
+        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.LEDGERS_INFORMATION);
+        verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.LEDGERS_INFORMATION, LedgersInformationResult.class);
+    }
 }
