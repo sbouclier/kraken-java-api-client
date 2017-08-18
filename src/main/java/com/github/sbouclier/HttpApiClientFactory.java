@@ -53,6 +53,8 @@ public class HttpApiClientFactory {
                 return new HttpApiClient<OpenPositionsResult>(apiKey, apiSecret);
             case LEDGERS_INFORMATION:
                 return new HttpApiClient<LedgersInformationResult>(apiKey, apiSecret);
+            case QUERY_LEDGERS:
+                return new HttpApiClient<LedgersInformationResult>(apiKey, apiSecret);
             default:
                 throw new IllegalArgumentException("Unknown Kraken API method");
         }

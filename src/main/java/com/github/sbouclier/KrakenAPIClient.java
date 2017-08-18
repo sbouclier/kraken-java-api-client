@@ -401,4 +401,20 @@ public class KrakenAPIClient {
         HttpApiClient<LedgersInformationResult> client = (HttpApiClient<LedgersInformationResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.LEDGERS_INFORMATION);
         return client.callPrivate(BASE_URL, KrakenApiMethod.LEDGERS_INFORMATION, LedgersInformationResult.class);
     }
+
+    /**
+     * Get ledgers
+     *
+     * @param ledgerIds list of ledger ids
+     * @return ledgers
+     * @throws KrakenApiException
+     */
+    public LedgersResult getLedgers(List<String> ledgerIds) throws KrakenApiException {
+        HttpApiClient<LedgersResult> client = (HttpApiClient<LedgersResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.QUERY_LEDGERS);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("id", ledgerIds.stream().collect(Collectors.joining(",")));
+
+        return client.callPrivate(BASE_URL, KrakenApiMethod.QUERY_LEDGERS, LedgersResult.class, params);
+    }
 }

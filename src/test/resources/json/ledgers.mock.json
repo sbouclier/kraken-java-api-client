@@ -1,0 +1,27 @@
+{
+  "error":[
+
+  ],
+  "result":{
+    "LKHYSJ-DXPLB-VDMZAL":{
+      "refid":"TFS77K-XLVZ2-C7OO5I",
+      "time":1503053043.5608,
+      "type":"margin",
+      "aclass":"currency",
+      "asset":"ZEUR",
+      "amount":"-0.0004",
+      "fee":"0.0119",
+      "balance":"143.0436"
+    },
+    "LZTMUA-6Q3X3-HBFNXO":{
+      "refid":"TY3TFI-KXBN3-LEICZJ",
+      "time":1503052721.3945,
+      "type":"margin",
+      "aclass":"currency",
+      "asset":"XXBT",
+      "amount":"0.0000000000",
+      "fee":"0.0000054010",
+      "balance":"0.0641989510"
+    }
+  }
+}

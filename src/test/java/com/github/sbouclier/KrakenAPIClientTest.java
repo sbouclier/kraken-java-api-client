@@ -647,4 +647,29 @@ public class KrakenAPIClientTest {
         verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.LEDGERS_INFORMATION);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.LEDGERS_INFORMATION, LedgersInformationResult.class);
     }
+
+    @Test
+    public void should_return_ledgers() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/ledgers.mock.json");
+        LedgersResult mockResult = new ObjectMapper().readValue(jsonResult, LedgersResult.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("id", "LKHYSJ-DXPLB-VDMZAL,LZTMUA-6Q3X3-HBFNXO");
+
+        // When
+        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.QUERY_LEDGERS)).thenReturn(mockClient);
+        when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.QUERY_LEDGERS, LedgersResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        LedgersResult result = client.getLedgers(Arrays.asList("LKHYSJ-DXPLB-VDMZAL", "LZTMUA-6Q3X3-HBFNXO"));
+
+        assertThat(result.getResult().size(), equalTo(2));
+        assertThat(result.getResult().get("LKHYSJ-DXPLB-VDMZAL").referenceId, equalTo("TFS77K-XLVZ2-C7OO5I"));
+        assertThat(result.getResult().get("LZTMUA-6Q3X3-HBFNXO").referenceId, equalTo("TY3TFI-KXBN3-LEICZJ"));
+
+        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.QUERY_LEDGERS);
+        verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.QUERY_LEDGERS, LedgersResult.class, params);
+    }
 }
