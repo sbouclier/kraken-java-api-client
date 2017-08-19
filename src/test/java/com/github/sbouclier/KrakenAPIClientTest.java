@@ -672,4 +672,25 @@ public class KrakenAPIClientTest {
         verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.QUERY_LEDGERS);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.QUERY_LEDGERS, LedgersResult.class, params);
     }
+
+    @Test
+    public void should_return_trade_volume() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/trade_volume.mock.json");
+        TradeVolumeResult mockResult = new ObjectMapper().readValue(jsonResult, TradeVolumeResult.class);
+
+        // When
+        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.TRADE_VOLUME)).thenReturn(mockClient);
+        when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADE_VOLUME, TradeVolumeResult.class)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        TradeVolumeResult result = client.getTradeVolume();
+
+        assertThat(result.getResult().currency, equalTo("ZUSD"));
+        assertThat(result.getResult().volume, equalTo(BigDecimal.valueOf(773.2808)));
+
+        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.TRADE_VOLUME);
+        verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADE_VOLUME, TradeVolumeResult.class);
+    }
 }

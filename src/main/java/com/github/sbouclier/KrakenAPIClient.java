@@ -2,7 +2,6 @@ package com.github.sbouclier;
 
 import com.github.sbouclier.result.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -416,5 +415,16 @@ public class KrakenAPIClient {
         params.put("id", ledgerIds.stream().collect(Collectors.joining(",")));
 
         return client.callPrivate(BASE_URL, KrakenApiMethod.QUERY_LEDGERS, LedgersResult.class, params);
+    }
+
+    /**
+     * Get trade volume
+     *
+     * @return trade volume
+     * @throws KrakenApiException
+     */
+    public TradeVolumeResult getTradeVolume() throws KrakenApiException {
+        HttpApiClient<TradeVolumeResult> client = (HttpApiClient<TradeVolumeResult>) this.clientFactory.getHttpApiClient(apiKey, apiSecret, KrakenApiMethod.TRADE_VOLUME);
+        return client.callPrivate(BASE_URL, KrakenApiMethod.TRADE_VOLUME, TradeVolumeResult.class);
     }
 }

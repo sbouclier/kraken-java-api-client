@@ -156,4 +156,15 @@ LedgersInformationResult result = client.getLedgersInformation();
 System.out.println(result.getResult());
 ```
 
+## Get trade volume
+
+```java
+TradeVolumeResult result = client.getTradeVolume();
+System.out.println(String.format("trade volume %s %s",
+    result.getResult().volume, result.getResult().currency));
+    
+// print
+trade volume 773.2808 ZUSD
+```
+
 Others methods coming soon...
