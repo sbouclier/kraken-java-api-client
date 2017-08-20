@@ -15,18 +15,50 @@ KrakenAPIClient client = new KrakenAPIClient();
 ## Get server time
 
 ```java
-ServerTimeResult result = client.getServerTime();
-System.out.println(result.getResult());
-// print ServerTimeResult.ServerTime[unixtime=1498933144,rfc1123=Sat,  1 Jul 17 18:19:04 +0000]
+ServerTimeResult serverTimeResult = client.getServerTime();
+System.out.println(String.format("timestamp: %d => %s",
+    serverTimeResult.getResult().unixtime,
+    serverTimeResult.getResult().rfc1123));
 ```
 
-## Get asset information
+Print:
+
+```
+timestamp: 1503232702 => Sun, 20 Aug 17 12:38:22 +0000
+```
+
+## Get assets information
+
+You can retrieve all assets information:
 
 ```java
-AssetInfoResult result = client.getAssetInformation();
-System.out.println(result.getResult());
-// print a map of AssetInformation, example: {XETC=AssetInformationResult.AssetInformation[alternateName=ETC,assetClass=currency,decimals=10,displayDecimals=5], XETH=AssetInformationResult.AssetInformation[alternateName=ETH,assetClass=currency,decimals=10,displayDecimals=5],...}
+AssetsInformationResult assetsInfoResult = client.getAssetsInformation();
+System.out.println(assetsInfoResult.getResult());
+
+// print a map of all AssetsInformationResult
 ```
+
+Or you can pass argument assets you want:
+
+```java
+AssetsInformationResult resultAssertInfo2 = client.getAssetsInformation("ZEUR", "XETH");
+
+AssetsInformationResult.AssetInformation euro = resultAssertInfo2.getResult().get("ZEUR");
+AssetsInformationResult.AssetInformation ethereum = resultAssertInfo2.getResult().get("XETH");
+
+System.out.println(String.format("%s: %d decimals, %d dispaly decimals",
+    euro.alternateName, euro.decimals, euro.displayDecimals));
+System.out.println(String.format("%s: %d decimals, %d dispaly decimals",
+    ethereum.alternateName, ethereum.decimals, ethereum.displayDecimals));
+```
+
+Print:
+
+```
+EUR: 4 decimals, 2 dispaly decimals
+ETH: 10 decimals, 5 dispaly decimals
+```
+
 
 ## Get tradable asset pairs
 

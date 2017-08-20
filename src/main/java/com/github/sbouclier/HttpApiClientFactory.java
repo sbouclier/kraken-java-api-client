@@ -15,7 +15,7 @@ public class HttpApiClientFactory {
             case SERVER_TIME:
                 return new HttpApiClient<ServerTimeResult>();
             case ASSET_INFORMATION:
-                return new HttpApiClient<AssetInformationResult>();
+                return new HttpApiClient<AssetsInformationResult>();
             case ASSET_PAIRS:
                 return new HttpApiClient<AssetPairsResult>();
             case TICKER_INFORMATION:

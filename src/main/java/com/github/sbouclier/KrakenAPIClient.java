@@ -109,14 +109,30 @@ public class KrakenAPIClient {
     }
 
     /**
-     * Get asset information
+     * Get assets information
      *
-     * @return asset information
+     * @return assets information
      * @throws KrakenApiException
      */
-    public AssetInformationResult getAssetInformation() throws KrakenApiException {
-        HttpApiClient<AssetInformationResult> client = (HttpApiClient<AssetInformationResult>) this.clientFactory.getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION);
-        return client.callPublic(BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class);
+    public AssetsInformationResult getAssetsInformation() throws KrakenApiException {
+        HttpApiClient<AssetsInformationResult> client = (HttpApiClient<AssetsInformationResult>) this.clientFactory.getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION);
+        return client.callPublic(BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetsInformationResult.class);
+    }
+
+    /**
+     * Get assets information
+     *
+     * @param assets to retrieve information
+     * @return assets information
+     * @throws KrakenApiException
+     */
+    public AssetsInformationResult getAssetsInformation(String... assets) throws KrakenApiException {
+        HttpApiClient<AssetsInformationResult> client = (HttpApiClient<AssetsInformationResult>) this.clientFactory.getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("asset", String.join(",", assets));
+
+        return client.callPublic(BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetsInformationResult.class, params);
     }
 
     /**

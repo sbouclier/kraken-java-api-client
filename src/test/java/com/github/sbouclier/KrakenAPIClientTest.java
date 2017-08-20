@@ -65,31 +65,31 @@ public class KrakenAPIClientTest {
     }
 
     @Test
-    public void should_return_asset_information() throws KrakenApiException, IOException {
+    public void should_return_all_asset_information() throws KrakenApiException, IOException {
 
         // Given
-        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/asset_information.mock.json");
-        AssetInformationResult mockResult = new ObjectMapper().readValue(jsonResult, AssetInformationResult.class);
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/assets_information.mock.json");
+        AssetsInformationResult mockResult = new ObjectMapper().readValue(jsonResult, AssetsInformationResult.class);
 
-        AssetInformationResult.AssetInformation xetc = new AssetInformationResult.AssetInformation();
+        AssetsInformationResult.AssetInformation xetc = new AssetsInformationResult.AssetInformation();
         xetc.alternateName = "ETC";
         xetc.assetClass = "currency";
         xetc.decimals = (byte) 10;
         xetc.displayDecimals = (byte) 5;
 
-        AssetInformationResult.AssetInformation xeth = new AssetInformationResult.AssetInformation();
+        AssetsInformationResult.AssetInformation xeth = new AssetsInformationResult.AssetInformation();
         xeth.alternateName = "ETH";
         xeth.assetClass = "currency";
         xeth.decimals = (byte) 10;
         xeth.displayDecimals = (byte) 5;
 
-        AssetInformationResult.AssetInformation zeur = new AssetInformationResult.AssetInformation();
+        AssetsInformationResult.AssetInformation zeur = new AssetsInformationResult.AssetInformation();
         zeur.alternateName = "EUR";
         zeur.assetClass = "currency";
         zeur.decimals = (byte) 4;
         zeur.displayDecimals = (byte) 2;
 
-        AssetInformationResult.AssetInformation zusd = new AssetInformationResult.AssetInformation();
+        AssetsInformationResult.AssetInformation zusd = new AssetsInformationResult.AssetInformation();
         zusd.alternateName = "USD";
         zusd.assetClass = "currency";
         zusd.decimals = (byte) 4;
@@ -97,10 +97,10 @@ public class KrakenAPIClientTest {
 
         // When
         when(mockClientFactory.getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION)).thenReturn(mockClient);
-        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class)).thenReturn(mockResult);
+        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetsInformationResult.class)).thenReturn(mockResult);
 
         KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
-        AssetInformationResult result = client.getAssetInformation();
+        AssetsInformationResult result = client.getAssetsInformation();
 
         // Then
         assertEquals(26, result.getResult().size());
@@ -110,7 +110,45 @@ public class KrakenAPIClientTest {
         assertThat(result.getResult().get("ZUSD"), samePropertyValuesAs(zusd));
 
         verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION);
-        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetInformationResult.class);
+        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetsInformationResult.class);
+    }
+
+    @Test
+    public void should_return_some_asset_information() throws KrakenApiException, IOException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/assets_information_eur_eth.mock.json");
+        AssetsInformationResult mockResult = new ObjectMapper().readValue(jsonResult, AssetsInformationResult.class);
+
+        AssetsInformationResult.AssetInformation xeth = new AssetsInformationResult.AssetInformation();
+        xeth.alternateName = "ETH";
+        xeth.assetClass = "currency";
+        xeth.decimals = (byte) 10;
+        xeth.displayDecimals = (byte) 5;
+
+        AssetsInformationResult.AssetInformation zeur = new AssetsInformationResult.AssetInformation();
+        zeur.alternateName = "EUR";
+        zeur.assetClass = "currency";
+        zeur.decimals = (byte) 4;
+        zeur.displayDecimals = (byte) 2;
+
+        Map<String, String> params = new HashMap<>();
+        params.put("asset", "ZEUR,ZETH");
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION)).thenReturn(mockClient);
+        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetsInformationResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        AssetsInformationResult result = client.getAssetsInformation("ZEUR", "ZETH");
+
+        // Then
+        assertEquals(2, result.getResult().size());
+        assertThat(result.getResult().get("XETH"), samePropertyValuesAs(xeth));
+        assertThat(result.getResult().get("ZEUR"), samePropertyValuesAs(zeur));
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ASSET_INFORMATION);
+        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_INFORMATION, AssetsInformationResult.class, params);
     }
 
     @Test

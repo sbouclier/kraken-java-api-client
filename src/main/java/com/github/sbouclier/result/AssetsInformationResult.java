@@ -7,11 +7,11 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.Map;
 
 /**
- * Result from getAssetInformation
+ * Result from getAssetsInformation
  *
  * @author Stéphane Bouclier
  */
-public class AssetInformationResult extends Result<Map<String, AssetInformationResult.AssetInformation>> {
+public class AssetsInformationResult extends Result<Map<String, AssetsInformationResult.AssetInformation>> {
 
     public static class AssetInformation {
 

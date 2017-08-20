@@ -14,19 +14,19 @@ import static org.hamcrest.core.StringStartsWith.startsWith;
  *
  * @author Stéphane Bouclier
  */
-public class AssetInformationResultTest {
+public class AssetsInformationResultTest {
 
     @Test
     public void should_return_to_string() throws IOException {
 
         // Given
-        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/asset_information.mock.json");
-        AssetInformationResult mockResult = new ObjectMapper().readValue(jsonResult, AssetInformationResult.class);
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/assets_information.mock.json");
+        AssetsInformationResult mockResult = new ObjectMapper().readValue(jsonResult, AssetsInformationResult.class);
 
         // When
         final String toString = mockResult.toString();
 
         // Then
-        assertThat(toString, startsWith("AssetInformationResult"));
+        assertThat(toString, startsWith("AssetsInformationResult"));
     }
 }

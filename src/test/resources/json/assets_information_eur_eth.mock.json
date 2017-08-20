@@ -1,0 +1,19 @@
+{
+  "error":[
+
+  ],
+  "result":{
+    "XETH":{
+      "aclass":"currency",
+      "altname":"ETH",
+      "decimals":10,
+      "display_decimals":5
+    },
+    "ZEUR":{
+      "aclass":"currency",
+      "altname":"EUR",
+      "decimals":4,
+      "display_decimals":2
+    }
+  }
+}
