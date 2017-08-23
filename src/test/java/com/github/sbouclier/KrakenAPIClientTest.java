@@ -1,6 +1,7 @@
 package com.github.sbouclier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.sbouclier.input.InfoInput;
 import com.github.sbouclier.mock.MockInitHelper;
 import com.github.sbouclier.result.*;
 import com.github.sbouclier.utils.StreamUtils;
@@ -152,7 +153,7 @@ public class KrakenAPIClientTest {
     }
 
     @Test
-    public void should_return_asset_pairs() throws IOException, KrakenApiException {
+    public void should_return_all_asset_pairs() throws IOException, KrakenApiException {
 
         // Given
         final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/asset_pairs.mock.json");
@@ -213,6 +214,37 @@ public class KrakenAPIClientTest {
 
         verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ASSET_PAIRS);
         verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class);
+    }
+
+    @Test
+    public void should_return_some_asset_pairs() throws IOException, KrakenApiException {
+
+        // Given
+        final String jsonResult = StreamUtils.getResourceAsString(this.getClass(), "json/asset_pairs_margin_etheur_xbteur.mock.json");
+        AssetPairsResult mockResult = new ObjectMapper().readValue(jsonResult, AssetPairsResult.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("info", "margin");
+        params.put("pair", "XETHZEUR,XXBTZEUR");
+
+        // When
+        when(mockClientFactory.getHttpApiClient(KrakenApiMethod.ASSET_PAIRS)).thenReturn(mockClient);
+        when(mockClient.callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class, params)).thenReturn(mockResult);
+
+        KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
+        AssetPairsResult result = client.getAssetPairs(InfoInput.MARGIN, "XETHZEUR", "XXBTZEUR");
+
+        // Then
+        AssetPairsResult.AssetPair ethEur = result.getResult().get("XETHZEUR");
+        AssetPairsResult.AssetPair xbtEUr = result.getResult().get("XXBTZEUR");
+
+        assertEquals(80, ethEur.marginCall.intValue());
+        assertEquals(40, ethEur.marginLevel.intValue());
+        assertEquals(80, xbtEUr.marginCall.intValue());
+        assertEquals(40, xbtEUr.marginLevel.intValue());
+
+        verify(mockClientFactory).getHttpApiClient(KrakenApiMethod.ASSET_PAIRS);
+        verify(mockClient).callPublic(KrakenAPIClient.BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class, params);
     }
 
     @Test
@@ -487,10 +519,10 @@ public class KrakenAPIClientTest {
         AccountBalanceResult mockResult = new ObjectMapper().readValue(jsonResult, AccountBalanceResult.class);
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.ACCOUNT_BALANCE)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.ACCOUNT_BALANCE)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ACCOUNT_BALANCE, AccountBalanceResult.class)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         AccountBalanceResult result = client.getAccountBalance();
 
         // Then
@@ -499,7 +531,7 @@ public class KrakenAPIClientTest {
         assertThat(result.getResult().get("XXRP"), Matchers.comparesEqualTo(BigDecimal.valueOf(100)));
         assertThat(result.getResult().get("BCH"), Matchers.comparesEqualTo(BigDecimal.valueOf(0.0472043520)));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.ACCOUNT_BALANCE);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.ACCOUNT_BALANCE);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ACCOUNT_BALANCE, AccountBalanceResult.class);
     }
 
@@ -511,17 +543,17 @@ public class KrakenAPIClientTest {
         TradeBalanceResult mockResult = new ObjectMapper().readValue(jsonResult, TradeBalanceResult.class);
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.TRADE_BALANCE)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.TRADE_BALANCE)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADE_BALANCE, TradeBalanceResult.class)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         TradeBalanceResult result = client.getTradeBalance();
 
         assertThat(result.getResult().equivalentBalance, Matchers.comparesEqualTo(BigDecimal.valueOf(260.1645)));
         assertThat(result.getResult().tradeBalance, Matchers.comparesEqualTo(BigDecimal.valueOf(230.6645)));
         assertThat(result.getResult().marginAmount, Matchers.comparesEqualTo(BigDecimal.ZERO));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.TRADE_BALANCE);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.TRADE_BALANCE);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADE_BALANCE, TradeBalanceResult.class);
     }
 
@@ -533,10 +565,10 @@ public class KrakenAPIClientTest {
         OpenOrdersResult mockResult = new ObjectMapper().readValue(jsonResult, OpenOrdersResult.class);
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.OPEN_ORDERS)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.OPEN_ORDERS)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_ORDERS, OpenOrdersResult.class)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         OpenOrdersResult result = client.getOpenOrders();
 
         assertThat(result.getResult().open.size(), equalTo(3));
@@ -544,7 +576,7 @@ public class KrakenAPIClientTest {
         assertThat(result.getResult().open.get("ORGIM4-6TDSR-DZMIID").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2700)));
         assertThat(result.getResult().open.get("OBP2WQ-RLHY2-OUZ5EA").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2500)));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.OPEN_ORDERS);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.OPEN_ORDERS);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_ORDERS, OpenOrdersResult.class);
     }
 
@@ -556,10 +588,10 @@ public class KrakenAPIClientTest {
         ClosedOrdersResult mockResult = new ObjectMapper().readValue(jsonResult, ClosedOrdersResult.class);
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.CLOSED_ORDERS)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.CLOSED_ORDERS)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.CLOSED_ORDERS, ClosedOrdersResult.class)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         ClosedOrdersResult result = client.getClosedOrders();
 
         assertThat(result.getResult().closed.size(), equalTo(49));
@@ -567,7 +599,7 @@ public class KrakenAPIClientTest {
         assertThat(result.getResult().closed.get("ORDWRN-QH4LD-Y2KG3W").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2090)));
         assertThat(result.getResult().closed.get("OJUIIP-3AR2S-GTW2VU").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(1810)));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.CLOSED_ORDERS);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.CLOSED_ORDERS);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.CLOSED_ORDERS, ClosedOrdersResult.class);
     }
 
@@ -582,16 +614,16 @@ public class KrakenAPIClientTest {
         params.put("txid", "OGRQC4-Q5C5N-2EYZDZ");
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.ORDERS_INFORMATION)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.ORDERS_INFORMATION)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         OrdersInformationResult result = client.getOrdersInformation(Arrays.asList("OGRQC4-Q5C5N-2EYZDZ"));
 
         assertThat(result.getResult().size(), equalTo(1));
         assertThat(result.getResult().get("OGRQC4-Q5C5N-2EYZDZ").description.price, Matchers.comparesEqualTo(BigDecimal.valueOf(2100)));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.ORDERS_INFORMATION);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.ORDERS_INFORMATION);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.ORDERS_INFORMATION, OrdersInformationResult.class, params);
     }
 
@@ -603,16 +635,16 @@ public class KrakenAPIClientTest {
         TradesHistoryResult mockResult = new ObjectMapper().readValue(jsonResult, TradesHistoryResult.class);
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.TRADES_HISTORY)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.TRADES_HISTORY)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADES_HISTORY, TradesHistoryResult.class)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         TradesHistoryResult result = client.getTradesHistory();
 
         assertThat(result.getResult().count, equalTo(51L));
         assertThat(result.getResult().trades.get("TICACU-DPSCI-EJ7FIR").price, Matchers.comparesEqualTo(BigDecimal.valueOf(2030)));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.TRADES_HISTORY);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.TRADES_HISTORY);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADES_HISTORY, TradesHistoryResult.class);
     }
 
@@ -627,17 +659,17 @@ public class KrakenAPIClientTest {
         params.put("txid", "TBKW74-IIBSM-LPZRWW,TW2JUT-MIK3P-RML5VC");
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.TRADES_INFORMATION)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.TRADES_INFORMATION)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADES_INFORMATION, TradesInformationResult.class, params)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         TradesInformationResult result = client.getTradesInformation(Arrays.asList("TBKW74-IIBSM-LPZRWW", "TW2JUT-MIK3P-RML5VC"));
 
         assertThat(result.getResult().size(), equalTo(2));
         assertThat(result.getResult().get("TBKW74-IIBSM-LPZRWW").orderTransactionId, equalTo("OW7A4A-JN5HV-MWCF3H"));
         assertThat(result.getResult().get("TW2JUT-MIK3P-RML5VC").orderTransactionId, equalTo("OK7VVF-P26QM-JP4SVX"));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.TRADES_INFORMATION);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.TRADES_INFORMATION);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADES_INFORMATION, TradesInformationResult.class, params);
     }
 
@@ -652,16 +684,16 @@ public class KrakenAPIClientTest {
         params.put("txid", "TY3TFI-KXBN3-LEICZJ");
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.OPEN_POSITIONS)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.OPEN_POSITIONS)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_POSITIONS, OpenPositionsResult.class, params)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         OpenPositionsResult result = client.getOpenPositions(Arrays.asList("TY3TFI-KXBN3-LEICZJ"));
 
         assertThat(result.getResult().size(), equalTo(1));
         assertThat(result.getResult().get("TY3TFI-KXBN3-LEICZJ").orderTransactionId, equalTo("OCNUXJ-FET73-L2AZFR"));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.OPEN_POSITIONS);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.OPEN_POSITIONS);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.OPEN_POSITIONS, OpenPositionsResult.class, params);
     }
 
@@ -673,16 +705,16 @@ public class KrakenAPIClientTest {
         LedgersInformationResult mockResult = new ObjectMapper().readValue(jsonResult, LedgersInformationResult.class);
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.LEDGERS_INFORMATION)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.LEDGERS_INFORMATION)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.LEDGERS_INFORMATION, LedgersInformationResult.class)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         LedgersInformationResult result = client.getLedgersInformation();
 
         assertThat(result.getResult().count, equalTo(124L));
         assertThat(result.getResult().ledger.get("LKHYSJ-DXPLB-VDMZAL").referenceId, equalTo("TFS77K-XLVZ2-C7OO5I"));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.LEDGERS_INFORMATION);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.LEDGERS_INFORMATION);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.LEDGERS_INFORMATION, LedgersInformationResult.class);
     }
 
@@ -697,17 +729,17 @@ public class KrakenAPIClientTest {
         params.put("id", "LKHYSJ-DXPLB-VDMZAL,LZTMUA-6Q3X3-HBFNXO");
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.QUERY_LEDGERS)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.QUERY_LEDGERS)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.QUERY_LEDGERS, LedgersResult.class, params)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         LedgersResult result = client.getLedgers(Arrays.asList("LKHYSJ-DXPLB-VDMZAL", "LZTMUA-6Q3X3-HBFNXO"));
 
         assertThat(result.getResult().size(), equalTo(2));
         assertThat(result.getResult().get("LKHYSJ-DXPLB-VDMZAL").referenceId, equalTo("TFS77K-XLVZ2-C7OO5I"));
         assertThat(result.getResult().get("LZTMUA-6Q3X3-HBFNXO").referenceId, equalTo("TY3TFI-KXBN3-LEICZJ"));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.QUERY_LEDGERS);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.QUERY_LEDGERS);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.QUERY_LEDGERS, LedgersResult.class, params);
     }
 
@@ -719,16 +751,16 @@ public class KrakenAPIClientTest {
         TradeVolumeResult mockResult = new ObjectMapper().readValue(jsonResult, TradeVolumeResult.class);
 
         // When
-        when(mockClientFactory.getHttpApiClient("apiKey","apiSecret",KrakenApiMethod.TRADE_VOLUME)).thenReturn(mockClient);
+        when(mockClientFactory.getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.TRADE_VOLUME)).thenReturn(mockClient);
         when(mockClient.callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADE_VOLUME, TradeVolumeResult.class)).thenReturn(mockResult);
 
-        KrakenAPIClient client = new KrakenAPIClient("apiKey","apiSecret", mockClientFactory);
+        KrakenAPIClient client = new KrakenAPIClient("apiKey", "apiSecret", mockClientFactory);
         TradeVolumeResult result = client.getTradeVolume();
 
         assertThat(result.getResult().currency, equalTo("ZUSD"));
         assertThat(result.getResult().volume, equalTo(BigDecimal.valueOf(773.2808)));
 
-        verify(mockClientFactory).getHttpApiClient("apiKey","apiSecret", KrakenApiMethod.TRADE_VOLUME);
+        verify(mockClientFactory).getHttpApiClient("apiKey", "apiSecret", KrakenApiMethod.TRADE_VOLUME);
         verify(mockClient).callPrivate(KrakenAPIClient.BASE_URL, KrakenApiMethod.TRADE_VOLUME, TradeVolumeResult.class);
     }
 }

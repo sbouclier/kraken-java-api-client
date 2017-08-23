@@ -1,0 +1,15 @@
+{
+  "error":[
+
+  ],
+  "result":{
+    "XETHZEUR":{
+      "margin_call":80,
+      "margin_level":40
+    },
+    "XXBTZEUR":{
+      "margin_call":80,
+      "margin_level":40
+    }
+  }
+}

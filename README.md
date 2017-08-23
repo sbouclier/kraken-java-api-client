@@ -55,17 +55,42 @@ System.out.println(String.format("%s: %d decimals, %d dispaly decimals",
 Print:
 
 ```
-EUR: 4 decimals, 2 dispaly decimals
-ETH: 10 decimals, 5 dispaly decimals
+EUR: 4 decimals, 2 display decimals
+ETH: 10 decimals, 5 display decimals
 ```
 
 
 ## Get tradable asset pairs
 
+You can retrieve all assets pairs:
+
 ```java
-AssetPairsResult result = client.getAssetPairs();
-System.out.println(result.getResult());
+AssetPairsResult assetPairsResult = client.getAssetPairs();
+System.out.println(assetPairsResult.getResult());
+
 // print a map of AssetPair
+```
+
+Or you can pass argument assets you want and what informations to retrieve, which can be: ALL, LEVERAGE, FEES, MARGIN.
+For example, to retrieve margins for ETH/EUR and XBT/EUR:
+
+```java
+AssetPairsResult assetPairsResult = client.getAssetPairs(InfoInput.MARGIN,"XETHZEUR","XXBTZEUR");
+
+AssetPairsResult.AssetPair ethEur = assetPairsResult.getResult().get("XETHZEUR");
+AssetPairsResult.AssetPair xbtEUr = assetPairsResult.getResult().get("XXBTZEUR");
+
+System.out.println(String.format("ETH/EUR margins: call %d, level %d",
+    ethEur.marginCall, ethEur.marginLevel));
+System.out.println(String.format("XBT/EUR margins: call %d, level %d", 
+    xbtEUr.marginCall, xbtEUr.marginLevel));
+```
+
+Print:
+
+```
+ETH/EUR margins: call 80, level 40
+XBT/EUR margins: call 80, level 40
 ```
 
 ## Get ticker information

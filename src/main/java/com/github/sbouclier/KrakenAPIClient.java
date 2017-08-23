@@ -1,5 +1,6 @@
 package com.github.sbouclier;
 
+import com.github.sbouclier.input.InfoInput;
 import com.github.sbouclier.result.*;
 
 import java.util.HashMap;
@@ -144,6 +145,24 @@ public class KrakenAPIClient {
     public AssetPairsResult getAssetPairs() throws KrakenApiException {
         HttpApiClient<AssetPairsResult> client = (HttpApiClient<AssetPairsResult>) this.clientFactory.getHttpApiClient(KrakenApiMethod.ASSET_PAIRS);
         return client.callPublic(BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class);
+    }
+
+    /**
+     * Get tradable asset pairs
+     *
+     * @param info informations to retrieve
+     * @param assetPairs asset pairs to retrieve
+     * @return asset pairs
+     * @throws KrakenApiException
+     */
+    public AssetPairsResult getAssetPairs(InfoInput info, String... assetPairs) throws KrakenApiException {
+        HttpApiClient<AssetPairsResult> client = (HttpApiClient<AssetPairsResult>) this.clientFactory.getHttpApiClient(KrakenApiMethod.ASSET_PAIRS);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("info", info.getValue());
+        params.put("pair", String.join(",", assetPairs));
+
+        return client.callPublic(BASE_URL, KrakenApiMethod.ASSET_PAIRS, AssetPairsResult.class, params);
     }
 
     /**

@@ -108,6 +108,9 @@ public class AssetPairsResult extends Result<Map<String, AssetPairsResult.AssetP
         @JsonProperty("margin_call")
         public Integer marginCall;
 
+        @JsonProperty("margin_level")
+        public Integer marginLevel;
+
         @JsonProperty("margin_stop")
         public Integer marginStop;
 
@@ -129,6 +132,7 @@ public class AssetPairsResult extends Result<Map<String, AssetPairsResult.AssetP
                     .append("feesMaker", feesMaker)
                     .append("feeVolumeCurrency", feeVolumeCurrency)
                     .append("marginCall", marginCall)
+                    .append("marginLevel", marginLevel)
                     .append("marginStop", marginStop)
                     .toString();
         }
