@@ -1,6 +1,7 @@
 package com.github.sbouclier;
 
 import com.github.sbouclier.input.InfoInput;
+import com.github.sbouclier.input.Interval;
 import com.github.sbouclier.result.*;
 
 import java.util.HashMap;
@@ -62,36 +63,6 @@ public class KrakenAPIClient {
     public KrakenAPIClient(String apiKey, String apiSecret, HttpApiClientFactory clientFactory) {
         this(apiKey, apiSecret);
         this.clientFactory = clientFactory;
-    }
-
-    // ---------------
-    // - INNER ENUMS -
-    // ---------------
-
-    public enum Interval {
-
-        ONE_MINUTE(1),
-        FIVE_MINUTES(5),
-        FIFTEEN_MINUTES(15),
-        THIRTY_MINUTES(30),
-        ONE_HOUR(60),
-        FOUR_HOURS(240),
-        ONE_DAY(1440),
-        ONE_WEEK(10080),
-        FIFTEEN_DAYS(21600);
-
-        private int minutes;
-
-        Interval(int minutes) {
-            this.minutes = minutes;
-        }
-
-        @Override
-        public String toString() {
-            return "Interval{" +
-                    "minutes=" + minutes +
-                    '}';
-        }
     }
 
     // -----------
@@ -196,7 +167,7 @@ public class KrakenAPIClient {
 
         Map<String, String> params = new HashMap<>();
         params.put("pair", pair);
-        params.put("interval", String.valueOf(interval.minutes));
+        params.put("interval", String.valueOf(interval.getMinutes()));
         params.put("since", String.valueOf(since));
 
         return client.callPublicWithLastId(BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
@@ -215,7 +186,7 @@ public class KrakenAPIClient {
 
         Map<String, String> params = new HashMap<>();
         params.put("pair", pair);
-        params.put("interval", String.valueOf(interval.minutes));
+        params.put("interval", String.valueOf(interval.getMinutes()));
 
         return client.callPublicWithLastId(BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params);
     }

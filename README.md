@@ -98,6 +98,7 @@ XBT/EUR margins: call 80, level 40
 ```java
 TickerInformationResult result = client.getTickerInformation(Arrays.asList("BTCEUR","ETHEUR"));
 System.out.println(result.getResult());
+
 // print a map of TickerInformation
 ```
 
@@ -106,8 +107,27 @@ System.out.println(result.getResult());
 ```java
 OHLCResult result = client.getOHLC("BTCEUR", Interval.ONE_MINUTE);
 System.out.println(result.getResult()); // OHLC data
-System.out.println(result.getLast()); // last id
+System.out.println(result.getLastId()); // last id
 ```
+
+Time frame intervals available are:
+- ONE_MINUTE
+- FIVE_MINUTES
+- FIFTEEN_MINUTES
+- THIRTY_MINUTES
+- ONE_HOUR
+- FOUR_HOURS
+- ONE_DAY
+- ONE_WEEK
+- FIFTEEN_DAYS
+
+If you don't want all data, you can also retrieve OHLC data since given id:
+
+```java
+OHLCResult result = client.getOHLC("BTCEUR", Interval.ONE_MINUTE, 1503691200);
+...
+```
+
 
 ## Get order book
 

@@ -2,6 +2,7 @@ package com.github.sbouclier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sbouclier.input.InfoInput;
+import com.github.sbouclier.input.Interval;
 import com.github.sbouclier.mock.MockInitHelper;
 import com.github.sbouclier.result.*;
 import com.github.sbouclier.utils.StreamUtils;
@@ -288,7 +289,7 @@ public class KrakenAPIClientTest {
         when(mockClient.callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params)).thenReturn(mockResult);
 
         KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
-        OHLCResult result = client.getOHLC("BTCEUR", KrakenAPIClient.Interval.ONE_DAY);
+        OHLCResult result = client.getOHLC("BTCEUR", Interval.ONE_DAY);
 
         // Then
         assertEquals(2, result.getResult().get("XXBTZEUR").size());
@@ -314,7 +315,7 @@ public class KrakenAPIClientTest {
         when(mockClient.callPublicWithLastId(KrakenAPIClient.BASE_URL, KrakenApiMethod.OHLC, OHLCResult.class, params)).thenReturn(mockResult);
 
         KrakenAPIClient client = new KrakenAPIClient(mockClientFactory);
-        OHLCResult result = client.getOHLC("BTCEUR", KrakenAPIClient.Interval.ONE_DAY, 123456);
+        OHLCResult result = client.getOHLC("BTCEUR", Interval.ONE_DAY, 123456);
 
         // Then
         assertEquals(2, result.getResult().get("XXBTZEUR").size());
