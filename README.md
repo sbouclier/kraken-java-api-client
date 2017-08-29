@@ -167,21 +167,41 @@ XXBTZEUR bids: [OrderBookResult.Market[price=3626.15500,volume=1.016,timestamp=1
 
 ## Get recent trades
 
+You can retrieve all recent trades:
+
 ```java
 RecentTradeResult result = client.getRecentTrades("BTCEUR");
 System.out.println(result.getResult());
-System.out.println("last id: "+result.getLastId());
+System.out.println("last id: " + result.getLastId());
+
+// print recent trades
 ```
 
+You can also retrieve trades since given id:
+
+```java
+RecentTradeResult result = client.getRecentTrades("BTCEUR", 1504035462);
+...
+```
 
 ## Get recent spreads
+
+You can retrieve all recent spreads:
 
 ```java
 RecentSpreadResult result = client.getRecentSpreads("BTCEUR");
 System.out.println(result.getResult());
 System.out.println("last id: "+result.getLastId());
+
+// print recent spreads
 ```
 
+You can also retrieve spreads data since given id:
+
+```java
+RecentSpreadResult result = client.getRecentSpreads("BTCEUR", 1504035462);
+...
+```
 
 # Private user data
 
